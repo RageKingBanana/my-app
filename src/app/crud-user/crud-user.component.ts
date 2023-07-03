@@ -17,6 +17,7 @@ export class CrudUserComponent implements OnInit{
   registeredUsers2!: any[];
   sensorData!: any[];
   sensorData2!: any[];
+  selectedUID!:string;
   selectedUser: selectedUserMode = {
     location:'',
     Recordings:'',
@@ -26,6 +27,7 @@ export class CrudUserComponent implements OnInit{
     gender:'',
     hashid:'',
     mobile:'',
+    userId:'',
   }
 
   constructor(private afDatabase: AngularFireDatabase, private http: HttpClient) {
@@ -39,60 +41,66 @@ export class CrudUserComponent implements OnInit{
     throw new Error('Method not implemented.');
   }
 
+
+  retrieveRegisteredUsers2() {
+    this.afDatabase.list('/Registered Users2').snapshotChanges().subscribe(usersSnapshot => {
+      const registeredUsers2 = usersSnapshot.map(userSnapshot => {
+        const userId = userSnapshot.key;
+        const userData = userSnapshot.payload.val() as Record<string, any>;
+        return { userId, ...userData };
+      });
+      console.log(registeredUsers2,'REG2ITO');
+      this.registeredUsers2 = registeredUsers2;
+      this.getLocations(this.registeredUsers2);
+    });
+  }
   retrieveEmployees() {
-    this.afDatabase.list('/Employees').valueChanges().subscribe((employees) => {
+    this.afDatabase.list('/Employees').snapshotChanges().subscribe(employeesSnapshot => {
+      const employees = employeesSnapshot.map(employeeSnapshot => {
+        const employeeId = employeeSnapshot.key;
+        const employeeData = employeeSnapshot.payload.val() as Record<string, any>;
+        return { employeeId, ...employeeData };
+      });
       this.employees = employees;
       this.getLocations(this.employees);
     });
   }
-
+  
   retrieveRegisteredUsers() {
-  //this.deleteUsersWithIdNode();
-    this.afDatabase.list('/Registered Users').valueChanges().subscribe((registeredUsers) => {
+    this.afDatabase.list('/Registered Users').snapshotChanges().subscribe(usersSnapshot => {
+      const registeredUsers = usersSnapshot.map(userSnapshot => {
+        const userId = userSnapshot.key;
+        const userData = userSnapshot.payload.val() as Record<string, any>;
+        return { userId, ...userData };
+      });
       this.registeredUsers = registeredUsers;
       this.getLocations(this.registeredUsers);
-
-    });
-  }
-
-  deleteUsersWithIdNode() {
-    this.afDatabase.list('/Registered Users').snapshotChanges().subscribe((users) => {
-      users.forEach((user) => {
-        const userId = user.key; // Get the user ID
-        
-        const userRef = this.afDatabase.object(`/Registered Users/${userId}`);
-        userRef.snapshotChanges().subscribe((snapshot) => {
-          if (snapshot.payload.exists() && snapshot.payload.child('id').exists()) {
-            userRef.remove(); // Remove the user with the 'id' node
-          }
-        });
-      });
     });
   }
   
-
-  retrieveRegisteredUsers2() {
-    this.afDatabase.list('/Registered Users2').valueChanges().subscribe((registeredUsers2) => {
-      this.registeredUsers2 = registeredUsers2;
-      console.log(registeredUsers2);
-      this.getLocations(this.registeredUsers2);
-    });
-  }
-
   retrieveSensorData() {
-    this.afDatabase.list('/Sensor Data').valueChanges().subscribe((sensorData) => {
+    this.afDatabase.list('/Sensor Data').snapshotChanges().subscribe(sensorDataSnapshot => {
+      const sensorData = sensorDataSnapshot.map(dataSnapshot => {
+        const key = dataSnapshot.key;
+        const value = dataSnapshot.payload.val() as Record<string, any>;
+        return { key, ...value };
+      });
       this.sensorData = sensorData;
       console.log(sensorData);
     });
   }
-
+  
   retrieveSensorData2() {
-    this.afDatabase.list('/Sensor Data2').valueChanges().subscribe((sensorData2) => {
+    this.afDatabase.list('/Sensor Data2').snapshotChanges().subscribe(sensorDataSnapshot => {
+      const sensorData2 = sensorDataSnapshot.map(dataSnapshot => {
+        const key = dataSnapshot.key;
+        const value = dataSnapshot.payload.val() as Record<string, any>;
+        return { key, ...value };
+      });
       this.sensorData2 = sensorData2;
     });
-    
   }
-
+  
   getLocations(users: any[]): void {
     users.forEach(user => {
       const [latitude, longitude] = user.coordinates.split(',');
@@ -114,17 +122,18 @@ export class CrudUserComponent implements OnInit{
     });
   }
 
-  openModalConfirm(hashid: string) {
-    const selectedUser = this.registeredUsers.find(user => user.hashid === hashid);
+  openModalConfirm(userid: string) {
+    const selectedUser = this.registeredUsers.find(user => user.userId === userid);
     if (selectedUser) {
 
     this.selectedUser = selectedUser;
-          
+          console.log(selectedUser.userId,'OPENMODAL');
+    this.selectedUID=selectedUser.userId;
     this.myModals.toArray()[0].nativeElement.classList.add('show');
     this.myModals.toArray()[0].nativeElement.style.display = 'block';
     document.body.classList.add('modal-open');
     } else {
-      console.log('User not found');
+      console.log('User not found',selectedUser);
     }
   }
 
@@ -139,15 +148,80 @@ export class CrudUserComponent implements OnInit{
 
   editTicket() {
     if (this.isEditMode) {
-
+      
+      const userId = this.selectedUser.userId;
   
-      this.isEditMode = false;
+      // Find the user with the matching userId
+      const user = this.registeredUsers.find(u => u.userId === userId);
+  console.log(user.userId,'bago mag get')
+      if (user) {
+        // Get the Firebase ID (auto-generated) for the user
+        const firebaseId = user.userId;
+  
+        if (firebaseId) {
+          // Update the user data
+          const userData = {
+            location: this.selectedUser.location,
+            Recordings: this.selectedUser.Recordings,
+            coordinates: this.selectedUser.coordinates,
+            email: this.selectedUser.email,
+            fullName: this.selectedUser.fullName,
+            gender: this.selectedUser.gender,
+            mobile: this.selectedUser.mobile
+          };
+  
+          // Save changes to the Firebase database using the Firebase ID and userId as reference
+          this.afDatabase.object(`/Registered Users/${firebaseId}`).update(userData)
+            .then(() => {
+              console.log('User updated successfully.');
+              this.isEditMode = false;
+            })
+            .catch((error) => {
+              console.error('Error updating user:', error);
+              // Handle error
+            });
+        } else {
+          console.log('Firebase ID not found for the user.');
+        }
+      } else {
+        console.log('User not found');
+      }
     } else {
       // Enter edit mode
       console.log("edit");
       this.isEditMode = true;
     }
   }
+  
+
+  updateUser(hashid: string, newData: Partial<selectedUserMode>) {
+    const userId = 'Registered Users/User Id';
+    const userRef = this.afDatabase.object(`${userId}/${hashid}`);
+    
+    userRef.update(newData)
+      .then(() => {
+        console.log('User updated successfully');
+      })
+      .catch((error: any) => {
+        console.error('Error updating user:', error);
+      });
+  }
+  
+  
+    // deleteUsersWithIdNode() {
+  //   this.afDatabase.list('/Registered Users').snapshotChanges().subscribe((users) => {
+  //     users.forEach((user) => {
+  //       const userId = user.key; // Get the user ID
+        
+  //       const userRef = this.afDatabase.object(`/Registered Users/${userId}`);
+  //       userRef.snapshotChanges().subscribe((snapshot) => {
+  //         if (snapshot.payload.exists() && snapshot.payload.child('id').exists()) {
+  //           userRef.remove(); // Remove the user with the 'id' node
+  //         }
+  //       });
+  //     });
+  //   });
+  // }
   
 
   highlighted = true;

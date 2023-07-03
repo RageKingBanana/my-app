@@ -6,6 +6,7 @@ export interface selectedUserMode {
   gender:string,
   hashid:string,
   mobile:string,
-  location:string
+  location:string,
+  userId:string
 }
 

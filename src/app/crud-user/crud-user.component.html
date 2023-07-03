@@ -28,8 +28,8 @@
     <th>Update</th>
   </tr>
   <tr *ngFor="let employee of employees">
-    <td hidden>{{ employee.hashid }}</td>
-    <td>{{ employee.location }}</td>
+    <td hidden>{{ employee.employeeId }}</td>
+    <td>{{ employee.key }}</td>
     <td>{{ employee.email }}</td>
     <td>{{ employee.fullName }}</td>
     <td>{{ employee.gender }}</td>
@@ -55,7 +55,7 @@
     <th>Update</th>
   </tr>
   <tr *ngFor="let user of registeredUsers">
-    <td hidden>{{ user.hashid }}</td>
+    <td hidden>{{ user.userId }}</td>
     <td hidden>{{ user.Recordings }}</td>
     <td>{{ user.location}}</td>
     <td>{{ user.email }}</td>
@@ -63,7 +63,7 @@
     <td>{{ user.gender }}</td>
     <td>{{ user.mobile }}</td>
     <td>
-      <button type="button" class="btn btn-primary" (click)="openModalConfirm(user.hashid)">
+      <button type="button" class="btn btn-primary" (click)="openModalConfirm(user.userId)">
         <span class="bi bi-pencil"></span>
       </button>
     </td>
@@ -84,7 +84,7 @@
     <th>Update</th>
   </tr>
   <tr *ngFor="let user of registeredUsers2">
-    <td hidden>{{  user.hashid }}</td>
+    <td hidden>{{  user.userId }}</td>
     <td hidden>{{ user.location }}</td>
     <td>{{ user.location }}</td>
     <td>{{ user.email }}</td>
@@ -117,7 +117,7 @@
     <th>Update</th>
   </tr>
   <tr *ngFor="let data of sensorData">
-    <td hidden>{{ data.Id }}</td>
+    <td hidden>{{ data.key }}</td>
     <td>{{ data.checker }}</td>
     <td>{{ data.connected }}</td>
     <td>{{ data.flame }}</td>
@@ -154,7 +154,7 @@
     <th>Status Notif</th>
   </tr>
   <tr *ngFor="let data of sensorData2">
-    <td hidden>{{ data.Id }}</td>
+    <td hidden>{{ data.key }}</td>
     <td>{{ data.checker }}</td>
     <td>{{ data.connected }}</td>
     <td>{{ data.flame }}</td>
@@ -173,17 +173,16 @@
   </tr>
 </table>
 
-
 <!-- Modal -->
 <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" #confirmModal>
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content" style="background-color: black;">
       <div class="modal-header">
         <h5 class="modal-title" style="color:white;">Update Data</h5>
       </div>
       <div class="modal-body">
         <div class="card-text" style="color:white; background-color: black;">
-          <table class="table-borderless" style="width: 50%;">
+          <table class="table-borderless" style="width: 100%;">
             <tbody>
               <tr>
                 <td style="font-size: 20px;" class="fw-bold">Location:</td>
