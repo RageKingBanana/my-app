@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
-import { AngularFireDatabase } from '@angular/fire/database';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AngularFireDatabase } from '@angular/fire/compat/database';
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -9,18 +11,23 @@ export class LoginComponent {
   email!: string;
   password!: string;
 
-  constructor(private afDatabase: AngularFireDatabase) { }
+  constructor(private afAuth: AngularFireAuth, private afDatabase: AngularFireDatabase) { }
 
   onSubmit() {
     const { email, password } = this;
-    this.afDatabase.auth().signInWithEmailAndPassword(email, password)
-      .then(() => {
+
+    // Retrieve the employees collection from the database
+    this.afDatabase.object('employees').valueChanges().subscribe((employees: any) => {
+      // Find the employee with matching email and password
+      const employee = Object.values(employees).find((emp: any) => emp.email === email && emp.password === password);
+
+      if (employee) {
         // Login success, perform any desired actions
         console.log('Login successful');
-      })
-      .catch((error) => {
+      } else {
         // Login error, handle the error appropriately
-        console.error('Login error:', error);
-      });
+        console.error('Invalid email or password');
+      }
+    });
   }
 }
