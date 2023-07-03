@@ -174,34 +174,66 @@
 </table>
 
 
-    <!-- Modal -->
-    <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" #confirmModal >
-      <div class="modal-dialog" role="document" >
-        <div class="modal-content" style="background-color: black;">
-          <div class="modal-header">
-            <h5 class="modal-title" style="color:white;">Update Data</h5>
-          </div>
-          <div class="modal-body" >
-            <div class="card-text" style="color:white; background-color: black;">
-              <table class="table-borderless" style="width: 50%;">
-                <tbody>
-                  <td>Location: {{ selectedUser.location || 'N/A'}}</td>
-                  <td>Email:{{ selectedUser.email  || 'N/A' }}</td>
-                  <td>Full Name:{{ selectedUser.fullName   || 'N/A'}}</td>
-                  <td>Gender:{{ selectedUser.gender  || 'N/A'}}</td>
-                  <td>Mobile:{{ selectedUser.mobile  || 'N/A' }}</td>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" (click)="closeModalConfirm()" data-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-danger" (click)="editTicket()">
-              {{ isEditMode ? 'Save' : 'Edit' }}
-            </button>
-          </div>
+<!-- Modal -->
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" #confirmModal>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content" style="background-color: black;">
+      <div class="modal-header">
+        <h5 class="modal-title" style="color:white;">Update Data</h5>
+      </div>
+      <div class="modal-body">
+        <div class="card-text" style="color:white; background-color: black;">
+          <table class="table-borderless" style="width: 50%;">
+            <tbody>
+              <tr>
+                <td style="font-size: 20px;" class="fw-bold">Location:</td>
+                <td style="font-size: 20px;">
+                  <span *ngIf="!isEditMode">{{ selectedUser.location || 'N/A' }}</span>
+                  <input *ngIf="isEditMode" type="text" class="form-control" [(ngModel)]="selectedUser.location">
+                </td>
+              </tr>
+              <tr>
+                <td style="font-size: 20px;" class="fw-bold">Email:</td>
+                <td style="font-size: 20px;">
+                  <span *ngIf="!isEditMode">{{ selectedUser.email || 'N/A' }}</span>
+                  <input *ngIf="isEditMode" type="text" class="form-control" [(ngModel)]="selectedUser.email">
+                </td>
+              </tr>
+              <tr>
+                <td style="font-size: 20px;" class="fw-bold">Full Name:</td>
+                <td style="font-size: 20px;">
+                  <span *ngIf="!isEditMode">{{ selectedUser.fullName || 'N/A' }}</span>
+                  <input *ngIf="isEditMode" type="text" class="form-control" [(ngModel)]="selectedUser.fullName">
+                </td>
+              </tr>
+              <tr>
+                <td style="font-size: 20px;" class="fw-bold">Gender:</td>
+                <td style="font-size: 20px;">
+                  <span *ngIf="!isEditMode">{{ selectedUser.gender || 'N/A' }}</span>
+                  <input *ngIf="isEditMode" type="text" class="form-control" [(ngModel)]="selectedUser.gender">
+                </td>
+              </tr>
+              <tr>
+                <td style="font-size: 20px;" class="fw-bold">Mobile:</td>
+                <td style="font-size: 20px;">
+                  <span *ngIf="!isEditMode">{{ selectedUser.mobile || 'N/A' }}</span>
+                  <input *ngIf="isEditMode" type="text" class="form-control" [(ngModel)]="selectedUser.mobile">
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModalConfirm()" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" (click)="editTicket()">
+          {{ isEditMode ? 'Save' : 'Edit' }}
+        </button>
+      </div>
     </div>
+  </div>
+</div>
+
+
   </div>
   </html>
