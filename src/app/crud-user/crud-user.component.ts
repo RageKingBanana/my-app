@@ -35,6 +35,7 @@ export class CrudUserComponent {
   retrieveRegisteredUsers2() {
     this.afDatabase.list('/Registered Users2').valueChanges().subscribe((registeredUsers2) => {
       this.registeredUsers2 = registeredUsers2;
+      console.log(registeredUsers2);
     });
   }
 
@@ -49,6 +50,11 @@ export class CrudUserComponent {
       this.sensorData2 = sensorData2;
     });
   }
+
+  highlighted = true;
+toggleOpacity() {
+  this.highlighted = !this.highlighted;
+}
 
 }
 

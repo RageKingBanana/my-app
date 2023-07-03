@@ -1,71 +1,123 @@
 <h2>Employees</h2>
-<ul>
-  <li *ngFor="let employee of employees">
-    <strong>Id:</strong> {{ employee.Id }}<br>
-    <strong>Coordinates:</strong> {{ employee.coordinates }}<br>
-    <strong>Email:</strong> {{ employee.email }}<br>
-    <strong>Full Name:</strong> {{ employee.fullName }}<br>
-    <strong>Gender:</strong> {{ employee.gender }}<br>
-    <strong>Mobile:</strong> {{ employee.mobile }}
-  </li>
-</ul>
+<table class="table p-3 table-hover " [style.background-color]="highlighted ? 'rgba(255, 255, 255, 1)' : 'rgba(255, 255, 255, 0.8)'">
+  <tr>
+    <th>Id</th>
+    <th>Coordinates</th>
+    <th>Email</th>
+    <th>Full Name</th>
+    <th>Gender</th>
+    <th>Mobile</th>
+  </tr>
+  <tr *ngFor="let employee of employees">
+    <td>{{ employee.Id }}</td>
+    <td>{{ employee.coordinates }}</td>
+    <td>{{ employee.email }}</td>
+    <td>{{ employee.fullName }}</td>
+    <td>{{ employee.gender }}</td>
+    <td>{{ employee.mobile }}</td>
+  </tr>
+</table>
 
 <h2>Registered Users</h2>
-<ul>
-  <li *ngFor="let user of registeredUsers">
-    <strong>Id:</strong> {{ user.Id }}<br>
-    <strong>Recordings:</strong> {{ user.recordings }}<br>
-    <strong>Coordinates:</strong> {{ user.coordinates }}<br>
-    <strong>Email:</strong> {{ user.email }}<br>
-    <strong>Full Name:</strong> {{ user.fullName }}<br>
-    <strong>Gender:</strong> {{ user.gender }}<br>
-    <strong>Mobile:</strong> {{ user.mobile }}
-  </li>
-</ul>
+<table class="table p-3 table-hover " [style.background-color]="highlighted ? 'rgba(255, 255, 255, 1)' : 'rgba(255, 255, 255, 0.8)'">
+  <tr>
+    <th>Id</th>
+    <th hidden>Recordings</th>
+    <th>Coordinates</th>
+    <th>Email</th>
+    <th>Full Name</th>
+    <th>Gender</th>
+    <th>Mobile</th>
+  </tr>
+  <tr *ngFor="let user of registeredUsers">
+    <td>{{ user.uid }}</td>
+    <td hidden>{{ user.Recordings }}</td>
+    <td>{{ user.coordinates }}</td>
+    <td>{{ user.email }}</td>
+    <td>{{ user.fullName }}</td>
+    <td>{{ user.gender }}</td>
+    <td>{{ user.mobile }}</td>
+  </tr>
+</table>
 
 <h2>Registered Users 2</h2>
-<ul>
-  <li *ngFor="let user of registeredUsers2">
-    <strong>Id:</strong> {{ user.Id }}<br>
-    <strong>Recordings:</strong> {{ user.recordings }}<br>
-    <strong>Coordinates:</strong> {{ user.coordinates }}<br>
-    <strong>Email:</strong> {{ user.email }}<br>
-    <strong>Full Name:</strong> {{ user.fullName }}<br>
-    <strong>Gender:</strong> {{ user.gender }}<br>
-    <strong>Mobile:</strong> {{ user.mobile }}
-  </li>
-</ul>
+<table class="table p-3 table-hover " [style.background-color]="highlighted ? 'rgba(255, 255, 255, 1)' : 'rgba(255, 255, 255, 0.8)'">
+  <tr>
+    <th>Id</th>
+    <th hidden>Recordings</th>
+    <th>Coordinates</th>
+    <th>Email</th>
+    <th>Full Name</th>
+    <th>Gender</th>
+    <th>Mobile</th>
+  </tr>
+  <tr *ngFor="let user of registeredUsers2">
+    <td>{{ user.Id }}</td>
+    <td hidden>{{ user.Recordings }}</td>
+    <td>{{ user.coordinates }}</td>
+    <td>{{ user.email }}</td>
+    <td>{{ user.fullName }}</td>
+    <td>{{ user.gender }}</td>
+    <td>{{ user.mobile }}</td>
+  </tr>
+</table>
 
 <h2>Sensor Data</h2>
-<ul>
-  <li *ngFor="let data of sensorData">
-    <strong>Id:</strong> {{ data.Id }}<br>
-    <strong>Checker:</strong> {{ data.checker }}<br>
-    <strong>Connected:</strong> {{ data.connected }}<br>
-    <strong>Flame:</strong> {{ data.flame }}<br>
-    <strong>Flame Status:</strong> {{ data.flameStatus }}<br>
-    <strong>mq135:</strong> {{ data.mq135 }}<br>
-    <strong>mq135 Status:</strong> {{ data.mq135Status }}<br>
-    <strong>mq2:</strong> {{ data.mq2 }}<br>
-    <strong>mq2 Status:</strong> {{ data.mq2Status }}<br>
-    <strong>Status:</strong> {{ data.status }}<br>
-    <strong>Status Notif:</strong> {{ data.statusNotif }}
-  </li>
-</ul>
+<table class="table p-3 table-hover " [style.background-color]="highlighted ? 'rgba(255, 255, 255, 1)' : 'rgba(255, 255, 255, 0.8)'">
+  <tr>
+    <th>Id</th>
+    <th>Checker</th>
+    <th>Connected</th>
+    <th>Flame</th>
+    <th>Flame Status</th>
+    <th>mq135</th>
+    <th>mq135 Status</th>
+    <th>mq2</th>
+    <th>mq2 Status</th>
+    <th>Status</th>
+    <th>Status Notif</th>
+  </tr>
+  <tr *ngFor="let data of sensorData">
+    <td>{{ data.Id }}</td>
+    <td>{{ data.checker }}</td>
+    <td>{{ data.connected }}</td>
+    <td>{{ data.flame }}</td>
+    <td>{{ data.flameStatus }}</td>
+    <td>{{ data.mq135 }}</td>
+    <td>{{ data.mq135Status }}</td>
+    <td>{{ data.mq2 }}</td>
+    <td>{{ data.mq2Status }}</td>
+    <td>{{ data.status }}</td>
+    <td>{{ data.statusNotif }}</td>
+  </tr>
+</table>
 
 <h2>Sensor Data 2</h2>
-<ul>
-  <li *ngFor="let data of sensorData2">
-    <strong>Id:</strong> {{ data.Id }}<br>
-    <strong>Checker:</strong> {{ data.checker }}<br>
-    <strong>Connected:</strong> {{ data.connected }}<br>
-    <strong>Flame:</strong> {{ data.flame }}<br>
-    <strong>Flame Status:</strong> {{ data.flameStatus }}<br>
-    <strong>mq135:</strong> {{ data.mq135 }}<br>
-    <strong>mq135 Status:</strong> {{ data.mq135Status }}<br>
-    <strong>mq2:</strong> {{ data.mq2 }}<br>
-    <strong>mq2 Status:</strong> {{ data.mq2Status }}<br>
-    <strong>Status:</strong> {{ data.status }}<br>
-    <strong>Status Notif:</strong> {{ data.statusNotif }}
-  </li>
-</ul>
+<table class="table p-3 table-hover " [style.background-color]="highlighted ? 'rgba(255, 255, 255, 1)' : 'rgba(255, 255, 255, 0.8)'">
+  <tr>
+    <th>Id</th>
+    <th>Checker</th>
+    <th>Connected</th>
+    <th>Flame</th>
+    <th>Flame Status</th>
+    <th>mq135</th>
+    <th>mq135 Status</th>
+    <th>mq2</th>
+    <th>mq2 Status</th>
+    <th>Status</th>
+    <th>Status Notif</th>
+  </tr>
+  <tr *ngFor="let data of sensorData2">
+    <td>{{ data.Id }}</td>
+    <td>{{ data.checker }}</td>
+    <td>{{ data.connected }}</td>
+    <td>{{ data.flame }}</td>
+    <td>{{ data.flameStatus }}</td>
+    <td>{{ data.mq135 }}</td>
+    <td>{{ data.mq135Status }}</td>
+    <td>{{ data.mq2 }}</td>
+    <td>{{ data.mq2Status }}</td>
+    <td>{{ data.status }}</td>
+    <td>{{ data.statusNotif }}</td>
+  </tr>
+</table>

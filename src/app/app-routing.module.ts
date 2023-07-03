@@ -6,17 +6,19 @@ import { AppComponent } from './app.component';
 import { CrudUserComponent } from './crud-user/crud-user.component';
 const routes: Routes = [
   {
+    path: 'crud-user',
+    component:CrudUserComponent
+  },
+  {
     path: 'login',
     component: LoginComponent
   },
+
   {
     path: 'app',
     component: AppComponent 
   },
-  {
-    path: 'crud-user',
-    component:CrudUserComponent
-  },
+
   {
     path: '',
     redirectTo: 'login',

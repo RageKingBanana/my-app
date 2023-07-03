@@ -58,11 +58,12 @@ export class LoginComponent
 							const tokenSetResult = await tokenRef.set(token);
 
 							console.log("Token value set successfully.");
-							this.router.navigate(['crud-user']);
+							
 						} catch (error)
 						{
 							console.error("Error setting token value:", error);
 						}
+						this.router.navigate(['crud-user']);
 					}
 				}
 			}
