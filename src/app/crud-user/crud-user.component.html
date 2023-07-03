@@ -1,7 +1,7 @@
 <h2>Employees</h2>
 <table class="table p-3 table-hover " [style.background-color]="highlighted ? 'rgba(255, 255, 255, 1)' : 'rgba(255, 255, 255, 0.8)'">
   <tr>
-    <th>Id</th>
+    <th hidden>Id</th>
     <th>Coordinates</th>
     <th>Email</th>
     <th>Full Name</th>
@@ -9,7 +9,7 @@
     <th>Mobile</th>
   </tr>
   <tr *ngFor="let employee of employees">
-    <td>{{ employee.Id }}</td>
+    <td hidden>{{ employee.Id }}</td>
     <td>{{ employee.coordinates }}</td>
     <td>{{ employee.email }}</td>
     <td>{{ employee.fullName }}</td>
@@ -21,7 +21,7 @@
 <h2>Registered Users</h2>
 <table class="table p-3 table-hover " [style.background-color]="highlighted ? 'rgba(255, 255, 255, 1)' : 'rgba(255, 255, 255, 0.8)'">
   <tr>
-    <th>Id</th>
+    <th hidden>Id</th>
     <th hidden>Recordings</th>
     <th>Coordinates</th>
     <th>Email</th>
@@ -30,7 +30,7 @@
     <th>Mobile</th>
   </tr>
   <tr *ngFor="let user of registeredUsers">
-    <td>{{ user.uid }}</td>
+    <td hidden>{{ user.uid }}</td>
     <td hidden>{{ user.Recordings }}</td>
     <td>{{ user.coordinates }}</td>
     <td>{{ user.email }}</td>
@@ -43,7 +43,7 @@
 <h2>Registered Users 2</h2>
 <table class="table p-3 table-hover " [style.background-color]="highlighted ? 'rgba(255, 255, 255, 1)' : 'rgba(255, 255, 255, 0.8)'">
   <tr>
-    <th>Id</th>
+    <th hidden>Id</th>
     <th hidden>Recordings</th>
     <th>Coordinates</th>
     <th>Email</th>
@@ -52,7 +52,7 @@
     <th>Mobile</th>
   </tr>
   <tr *ngFor="let user of registeredUsers2">
-    <td>{{ user.Id }}</td>
+    <td hidden>{{ user.Id }}</td>
     <td hidden>{{ user.Recordings }}</td>
     <td>{{ user.coordinates }}</td>
     <td>{{ user.email }}</td>
@@ -65,7 +65,7 @@
 <h2>Sensor Data</h2>
 <table class="table p-3 table-hover " [style.background-color]="highlighted ? 'rgba(255, 255, 255, 1)' : 'rgba(255, 255, 255, 0.8)'">
   <tr>
-    <th>Id</th>
+    <th hidden>Id</th>
     <th>Checker</th>
     <th>Connected</th>
     <th>Flame</th>
@@ -78,7 +78,7 @@
     <th>Status Notif</th>
   </tr>
   <tr *ngFor="let data of sensorData">
-    <td>{{ data.Id }}</td>
+    <td hidden>{{ data.Id }}</td>
     <td>{{ data.checker }}</td>
     <td>{{ data.connected }}</td>
     <td>{{ data.flame }}</td>
@@ -95,7 +95,7 @@
 <h2>Sensor Data 2</h2>
 <table class="table p-3 table-hover " [style.background-color]="highlighted ? 'rgba(255, 255, 255, 1)' : 'rgba(255, 255, 255, 0.8)'">
   <tr>
-    <th>Id</th>
+    <th hidden>Id</th>
     <th>Checker</th>
     <th>Connected</th>
     <th>Flame</th>
@@ -108,7 +108,7 @@
     <th>Status Notif</th>
   </tr>
   <tr *ngFor="let data of sensorData2">
-    <td>{{ data.Id }}</td>
+    <td hidden>{{ data.Id }}</td>
     <td>{{ data.checker }}</td>
     <td>{{ data.connected }}</td>
     <td>{{ data.flame }}</td>

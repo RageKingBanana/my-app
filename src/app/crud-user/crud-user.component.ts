@@ -42,6 +42,7 @@ export class CrudUserComponent {
   retrieveSensorData() {
     this.afDatabase.list('/Sensor Data').valueChanges().subscribe((sensorData) => {
       this.sensorData = sensorData;
+      console.log(sensorData);
     });
   }
 
