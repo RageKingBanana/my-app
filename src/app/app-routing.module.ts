@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { AppComponent } from './app.component';
+import { CrudUserComponent } from './crud-user/crud-user.component';
 const routes: Routes = [
   {
     path: 'login',
@@ -10,7 +11,11 @@ const routes: Routes = [
   },
   {
     path: 'app',
-    component: AppComponent // Replace with your main application component
+    component: AppComponent 
+  },
+  {
+    path: 'crud-user',
+    component:CrudUserComponent
   },
   {
     path: '',
