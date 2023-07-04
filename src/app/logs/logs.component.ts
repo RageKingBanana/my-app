@@ -2,6 +2,8 @@ import {Component, ElementRef, QueryList, ViewChildren} from "@angular/core";
 import {AngularFireDatabase} from "@angular/fire/compat/database";
 import {HttpClient} from "@angular/common/http";
 import {selectedLogModel} from "../_shared/models/selectedlog.model";
+import {Observable, of, tap} from "rxjs";
+import {map} from "rxjs/operators";
 
 @Component({
 	selector: "app-logs",
@@ -14,7 +16,7 @@ export class LogsComponent
 	employees!: any[];
 	registeredUsers!: any[];
 	registeredUsers2!: any[];
-	sensorData!: any[];
+	sensorData$: Observable<FilteredLogsData[]> = of([]);
 	sensorData2!: any[];
 	selectedUID!: string;
 	selectedLog: selectedLogModel = {
@@ -69,38 +71,34 @@ export class LogsComponent
 
 	//  }
 
-	ngOnInit(): void
+	async ngOnInit(): Promise<void>
 	{
-		this.retrievelogs();
+		await this.retrievelogs();
 	}
 
-	retrievelogs()
+	async retrievelogs()
 	{
-		this.afDatabase.list("/Logs").snapshotChanges().subscribe(sensorDataSnapshot =>
-		{
-			const sensorData = sensorDataSnapshot.map(dataSnapshot =>
-			{
-				const key = dataSnapshot.key;
-				const value = dataSnapshot.payload.val() as Record<string, any>;
-				return {key, ...value};
-			});
-
-			const filteredData = sensorData.map(data =>
-			{
-				return {
+		this.sensorData$ = this.afDatabase.list("/Logs").snapshotChanges().pipe(
+			map(sensorDataSnapshot =>
+				sensorDataSnapshot.map(dataSnapshot =>
+				{
+					const key = dataSnapshot.key;
+					const value = dataSnapshot.payload.val() as Record<string, any>;
+					return {key, ...value}
+				})),
+			map((sensorData): FilteredLogsData[] =>
+				sensorData.map(data => ({
 					// @ts-ignore
 					sensorDataValues: data.sensorDataValues,
 					// @ts-ignore
 					userData: data.userData,
 					// @ts-ignore
 					timestamp: data.timestamp,
-				};
-			});
-
-			this.sensorData = sensorData;
-			console.log({filteredData});
-			// this.getLocations(this.sensorData);
-		});
+				}))),
+			tap(data => {
+				console.log(data);
+			})
+		);
 	}
 
 	// openModalConfirm(data: any) {
@@ -223,4 +221,42 @@ export class LogsComponent
 	{
 		this.highlighted = !this.highlighted;
 	}
+}
+
+export interface SensorDataValues
+{
+	checker: string
+	connected: number
+	flame: boolean
+	flameStatus: string,
+	loc: string,
+	mq135: number,
+	mq135Status: string,
+	mq2: number,
+	mq2Status: string,
+	status: string,
+	statusNotif: string,
+}
+
+export interface UserData
+{
+	[key: string]: UserDataValue;
+}
+
+interface UserDataValue
+{
+	coordinates: string,
+	email: string,
+	fullName: string,
+	gender: string,
+	hashid: string,
+	location: string,
+	mobile: string,
+}
+
+export interface FilteredLogsData
+{
+	sensorDataValues: SensorDataValues,
+	timestamp?: number | string,
+	userData: UserData
 }
