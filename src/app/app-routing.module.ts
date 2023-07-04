@@ -5,6 +5,7 @@ import { LoginComponent } from './login/login.component';
 import { AppComponent } from './app.component';
 import { CrudUserComponent } from './crud-user/crud-user.component';
 import { AuthGuard } from './guards/auth.guard';
+import { EmployeeCrudComponent } from './employee-crud/employee-crud.component';
 const routes: Routes = [
 
   {
@@ -25,7 +26,14 @@ const routes: Routes = [
     path: '',
     redirectTo: 'login',
     pathMatch: 'full'
+  },
+
+  {
+    path: 'employee-crud',
+    component:EmployeeCrudComponent,
+    canActivate: [AuthGuard], // Apply the AuthGuard to this route
   }
+  
 ];
 
 
