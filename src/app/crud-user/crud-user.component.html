@@ -15,32 +15,6 @@
       padding: 10px; /* Add padding to create space between columns */
     }
   </style>
-<h2>Employees</h2>
-<table class="table p-3 table-hover white-text" [style.background-color]="highlighted ? 'rgba(0, 0, 0, 0.9)' : 'rgba(255, 255, 255, 0.8)'">
-
-  <tr>
-    <th hidden>Id</th>
-    <th>Location</th>
-    <th>Email</th>
-    <th>Full Name</th>
-    <th>Gender</th>
-    <th>Mobile</th>
-    <th>Update</th>
-  </tr>
-  <tr *ngFor="let employee of employees">
-    <td hidden>{{ employee.employeeId }}</td>
-    <td>{{ employee.location }}</td>
-    <td>{{ employee.email }}</td>
-    <td>{{ employee.fullName }}</td>
-    <td>{{ employee.gender }}</td>
-    <td>{{ employee.mobile }}</td>
-    <td>
-      <button type="button" class="btn btn-primary" >
-        <span class="bi bi-pencil"></span>
-      </button>
-    </td>
-  </tr>
-</table>
 
 <h2>Registered Users</h2>
 <table class="table p-3 table-hover white-text" [style.background-color]="highlighted ? 'rgba(0, 0, 0, 0.9)' : 'rgba(255, 255, 255, 0.8)'">
@@ -99,79 +73,6 @@
   </tr>
 </table>
 
-<h2>Sensor Data</h2>
-<table class="table p-3 table-hover white-text" [style.background-color]="highlighted ? 'rgba(0, 0, 0, 0.9)' : 'rgba(255, 255, 255, 0.8)'">
-
-  <tr>
-    <th hidden>Id</th>
-    <th>Checker</th>
-    <th>Connected</th>
-    <th>Flame</th>
-    <th>Flame Status</th>
-    <th>mq135</th>
-    <th>mq135 Status</th>
-    <th>mq2</th>
-    <th>mq2 Status</th>
-    <th>Status</th>
-    <th>Status Notif</th>
-    <th>Update</th>
-  </tr>
-  <tr *ngFor="let data of sensorData">
-    <td hidden>{{ data.key }}</td>
-    <td>{{ data.checker }}</td>
-    <td>{{ data.connected }}</td>
-    <td>{{ data.flame }}</td>
-    <td>{{ data.flameStatus }}</td>
-    <td>{{ data.mq135 }}</td>
-    <td>{{ data.mq135Status }}</td>
-    <td>{{ data.mq2 }}</td>
-    <td>{{ data.mq2Status }}</td>
-    <td>{{ data.status }}</td>
-    <td>{{ data.statusNotif }}</td>
-    <td>
-      <button type="button" class="btn btn-primary">
-        <span class="bi bi-pencil"></span>
-      </button>
-    </td>
-  </tr>
-</table>
-
-<h2>Sensor Data 2</h2>
-<table class="table p-3 table-hover white-text" [style.background-color]="highlighted ? 'rgba(0, 0, 0, 0.9)' : 'rgba(255, 255, 255, 0.8)'">
-
-
-  <tr>
-    <th hidden>Id</th>
-    <th>Checker</th>
-    <th>Connected</th>
-    <th>Flame</th>
-    <th>Flame Status</th>
-    <th>mq135</th>
-    <th>mq135 Status</th>
-    <th>mq2</th>
-    <th>mq2 Status</th>
-    <th>Status</th>
-    <th>Status Notif</th>
-  </tr>
-  <tr *ngFor="let data of sensorData2">
-    <td hidden>{{ data.key }}</td>
-    <td>{{ data.checker }}</td>
-    <td>{{ data.connected }}</td>
-    <td>{{ data.flame }}</td>
-    <td>{{ data.flameStatus }}</td>
-    <td>{{ data.mq135 }}</td>
-    <td>{{ data.mq135Status }}</td>
-    <td>{{ data.mq2 }}</td>
-    <td>{{ data.mq2Status }}</td>
-    <td>{{ data.status }}</td>
-    <td>{{ data.statusNotif }}</td>
-    <td>
-      <button type="button" class="btn btn-primary">
-        <span class="bi bi-pencil"></span>
-      </button>
-    </td>
-  </tr>
-</table>
 
 <!-- Modal -->
 <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" #confirmModal>

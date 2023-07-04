@@ -1,43 +1,41 @@
 
-  
- <div class="crud-user-reponses p-3" style="height: 900px; overflow-y: scroll; background-image: url('assets/images/login.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
- <div class="login-page" >
-  <div class="contain shadow-sm rounded p-4 mx-auto text-center" style="background: transparent; width: 500px;">
-        <form #loginForm="ngForm" class="p-4">
-          <div class="header-form mb-4" style="color:rgb(0, 0, 0); background-color: transparent; ">
-            <h1>PYRONNOIA</h1>
-            <h2>Login</h2>
-            <p>Enter your credentials to access your account.</p>
-          </div>
-          <div class="form-floating mb-3">
-            <label for="floatingInput" *ngIf="!hasError(username)" style="color: rgb(23, 177, 126)">Username</label>
-            <input type="text" class="form-control" [(ngModel)]="loginModel.Username" name="username" #username="ngModel"
-              id="floatingInput" placeholder="name@example.com" required
-              style="color: rgb(255, 255, 255); background-color: black"
-              onmouseover="this.style.color='white'; this.style.backgroundColor='black';"
-              onmouseout="this.style.color='white'; this.style.backgroundColor='black';">
-            <label for="floatingInput" class="text-danger" *ngIf="hasError(username)">Username is required</label>
-          </div>
-    
-          <div class="form-floating mb-3">
-            <label for="floatingPassword" *ngIf="!hasError(password)" required style="color: rgb(23, 177, 126)">Password</label>
-            <input type="password" class="form-control" [(ngModel)]="loginModel.Password" name="password"
-              #password="ngModel" id="floatingPassword" placeholder="Password" required
-              style="color:white; background-color: black;">
-            <label for="floatingPassword" class="text-danger" *ngIf="hasError(password)">Password is required</label>
-          </div>
-          <div class="alert alert-danger" role="alert" *ngIf="errorMessage != ''" (click)="errorMessage = ''">
-            {{ errorMessage }}
-          </div>
-          <button type="button" class="btn btn-primary" [disabled]="!loginForm.valid" (click)="login()"
-            *ngIf="!isLoading">Login</button>
-          <button class="btn btn-primary" id="loading-btn" *ngIf="isLoading && errorMessage == ''">
-            <div class="spinner-border text-light mt-1" role="status" style="height: 20px; width: 20px;">
-              <span class="visually-hidden">Loading...</span>
-            </div>
-          </button>
-          <!-- <a href="#" class="mt-4"><small>Forgot your password?</small></a> -->
-        </form>
+<div class="login-page" style="background-image: url('assets/images/peakpx.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
+  <div class="contain shadow-sm rounded p-4"style="background: transparent;width: 500px">
+    <form #loginForm="ngForm" class="p-4">
+      <div class="header-form mb-4" style="color:white; background-color: transparent; ">
+        <h1>PYRONNOIA</h1>
+        <h2>Login</h2>
+        <p>Enter your credentials to access your account.</p>
       </div>
+      <div class="form-floating mb-3">
+        <label for="floatingInput" *ngIf="!hasError(username)" style="color: rgb(23, 177, 126)">Username</label>
+        <input type="text" class="form-control" [(ngModel)]="loginModel.Username" name="username" #username="ngModel"
+          id="floatingInput" placeholder="name@example.com" required
+          style="color: rgb(255, 255, 255); background-color: black"
+          onmouseover="this.style.color='white'; this.style.backgroundColor='black';"
+          onmouseout="this.style.color='white'; this.style.backgroundColor='black';">
+        <label for="floatingInput" class="text-danger" *ngIf="hasError(username)">Username is required</label>
+      </div>
+
+      <div class="form-floating mb-3">
+        <label for="floatingPassword" *ngIf="!hasError(password)" required style="color: rgb(23, 177, 126)">Password</label>
+        <input type="password" class="form-control" [(ngModel)]="loginModel.Password" name="password"
+          #password="ngModel" id="floatingPassword" placeholder="Password" required
+          style="color:white; background-color: black;">
+        <label for="floatingPassword" class="text-danger" *ngIf="hasError(password)">Password is required</label>
+      </div>
+      <div class="alert alert-danger" role="alert" *ngIf="errorMessage != ''" (click)="errorMessage = ''">
+        {{ errorMessage }}
+      </div>
+      <button type="button" class="btn btn-primary" [disabled]="!loginForm.valid" (click)="login()"
+        *ngIf="!isLoading">Login</button>
+      <button class="btn btn-primary" id="loading-btn" *ngIf="isLoading && errorMessage == ''">
+        <div class="spinner-border text-light mt-1" role="status" style="height: 20px; width: 20px;">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </button>
+      <!-- <a href="#" class="mt-4"><small>Forgot your password?</small></a> -->
+    </form>
   </div>
 </div>
+

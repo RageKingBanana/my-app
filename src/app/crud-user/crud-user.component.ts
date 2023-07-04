@@ -31,11 +31,8 @@ export class CrudUserComponent implements OnInit{
   }
 
   constructor(private afDatabase: AngularFireDatabase, private http: HttpClient) {
-    this.retrieveEmployees();
     this.retrieveRegisteredUsers();
     this.retrieveRegisteredUsers2();
-    this.retrieveSensorData();
-    this.retrieveSensorData2();
   }
   ngOnInit(): void {
     throw new Error('Method not implemented.');
@@ -54,17 +51,7 @@ export class CrudUserComponent implements OnInit{
       this.getLocations(this.registeredUsers2);
     });
   }
-  retrieveEmployees() {
-    this.afDatabase.list('/Employees').snapshotChanges().subscribe(employeesSnapshot => {
-      const employees = employeesSnapshot.map(employeeSnapshot => {
-        const employeeId = employeeSnapshot.key;
-        const employeeData = employeeSnapshot.payload.val() as Record<string, any>;
-        return { employeeId, ...employeeData };
-      });
-      this.employees = employees;
-      this.getLocations(this.employees);
-    });
-  }
+
   
   retrieveRegisteredUsers() {
     this.afDatabase.list('/Registered Users').snapshotChanges().subscribe(usersSnapshot => {
@@ -78,29 +65,7 @@ export class CrudUserComponent implements OnInit{
     });
   }
   
-  retrieveSensorData() {
-    this.afDatabase.list('/Sensor Data').snapshotChanges().subscribe(sensorDataSnapshot => {
-      const sensorData = sensorDataSnapshot.map(dataSnapshot => {
-        const key = dataSnapshot.key;
-        const value = dataSnapshot.payload.val() as Record<string, any>;
-        return { key, ...value };
-      });
-      this.sensorData = sensorData;
-      console.log(sensorData);
-    });
-  }
-  
-  retrieveSensorData2() {
-    this.afDatabase.list('/Sensor Data2').snapshotChanges().subscribe(sensorDataSnapshot => {
-      const sensorData2 = sensorDataSnapshot.map(dataSnapshot => {
-        const key = dataSnapshot.key;
-        const value = dataSnapshot.payload.val() as Record<string, any>;
-        return { key, ...value };
-      });
-      this.sensorData2 = sensorData2;
-    });
-  }
-  
+
   getLocations(users: any[]): void {
     users.forEach(user => {
       const [latitude, longitude] = user.coordinates.split(',');

@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { CrudUserComponent } from './crud-user/crud-user.component';
 import { AuthGuard } from './guards/auth.guard';
 import { EmployeeCrudComponent } from './employee-crud/employee-crud.component';
+import { LogsComponent } from './logs/logs.component';
 const routes: Routes = [
   {
     path: 'login',
@@ -30,6 +31,11 @@ const routes: Routes = [
   {
     path: 'employee-crud',
     component: EmployeeCrudComponent,
+    canActivate: [AuthGuard], // Apply the AuthGuard to this route
+  },
+  {
+    path: 'logs',
+    component: LogsComponent,
     canActivate: [AuthGuard], // Apply the AuthGuard to this route
   },
 ];

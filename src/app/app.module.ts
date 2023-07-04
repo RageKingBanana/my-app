@@ -18,13 +18,15 @@ import { CrudUserComponent } from './crud-user/crud-user.component';
 import { HttpClientModule } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { EmployeeCrudComponent } from './employee-crud/employee-crud.component';
+import { LogsComponent } from './logs/logs.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     CrudUserComponent,
-    EmployeeCrudComponent
+    EmployeeCrudComponent,
+    LogsComponent
   ],
   imports: [
     BrowserModule,

@@ -6,11 +6,11 @@
           Home
         </a>
       </mat-list-item>
-      <mat-list-item>
+      <!-- <mat-list-item>
         <a mat-menu-item routerLink="/login" routerLinkActive="active-link">
           Login
         </a>
-      </mat-list-item>
+      </mat-list-item> -->
       <mat-list-item>
         <a mat-menu-item routerLink="/crud-user" routerLinkActive="active-link">
           Clients
@@ -22,9 +22,12 @@
         </a>
       </mat-list-item>
       <mat-list-item>
-        <a mat-menu-item routerLink="/employee-crud" routerLinkActive="active-link">
-          Logout
+        <a mat-menu-item routerLink="/logs" routerLinkActive="active-link">
+          Logs
         </a>
+      </mat-list-item>
+      <mat-list-item>
+        <button mat-button (click)="logout()">Logout</button>
       </mat-list-item>
     </mat-list>
   </mat-sidenav>

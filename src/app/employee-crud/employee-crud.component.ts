@@ -2,7 +2,8 @@ import { Component, ElementRef, OnInit, QueryList, ViewChildren } from '@angular
 import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { HttpClient } from '@angular/common/http';
 import { selectedUserMode } from '../_shared/models/selecteduser.model';
-
+import { map, take } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 @Component({
   selector: 'app-employee-crud',
   templateUrl: './employee-crud.component.html',
@@ -77,18 +78,6 @@ export class EmployeeCrudComponent implements OnInit {
     });
   }
   
-  retrieveSensorData() {
-    this.afDatabase.list('/Sensor Data').snapshotChanges().subscribe(sensorDataSnapshot => {
-      const sensorData = sensorDataSnapshot.map(dataSnapshot => {
-        const key = dataSnapshot.key;
-        const value = dataSnapshot.payload.val() as Record<string, any>;
-        return { key, ...value };
-      });
-      this.sensorData = sensorData;
-      console.log(sensorData);
-    });
-  }
-  
   retrieveSensorData2() {
     this.afDatabase.list('/Sensor Data2').snapshotChanges().subscribe(sensorDataSnapshot => {
       const sensorData2 = sensorDataSnapshot.map(dataSnapshot => {
@@ -96,7 +85,52 @@ export class EmployeeCrudComponent implements OnInit {
         const value = dataSnapshot.payload.val() as Record<string, any>;
         return { key, ...value };
       });
-      this.sensorData2 = sensorData2;
+      this.sensorData = sensorData2;
+      console.log(sensorData2);
+    });
+  }
+  
+  retrieveSensorData() {
+    this.afDatabase.list('/Sensor Data').snapshotChanges().subscribe(sensorDataSnapshot => {
+      const sensorData = sensorDataSnapshot.map(dataSnapshot => {
+        const key = dataSnapshot.key;
+        const value = dataSnapshot.payload.val() as Record<string, any>;
+        return { key, ...value };
+      });
+      this.sensorData2 = sensorData;
+      this.uploadSensorData1(sensorData);
+      console.log(sensorData, 'sensordata');
+    });
+  }
+  // retrievelogs() {
+  //   this.afDatabase.list('/AllSensorData2').snapshotChanges().subscribe(sensorDataSnapshot => {
+  //     const sensorData2 = sensorDataSnapshot.map(dataSnapshot => {
+  //       const key = dataSnapshot.key;
+  //       const value = dataSnapshot.payload.val() as Record<string, any>;
+  //       return { key, ...value };
+  //     });
+  //     this.sensorData2 = sensorData2;
+  //    // this.uploadSensorData2(sensorData2);
+  //     console.log(sensorData2, 'sensordata2');
+  //   });
+  // }
+
+  
+  uploadSensorData1(sensorData1: any[]) {
+    // Fetch the existing logs from the Firebase Realtime Database
+    this.afDatabase.object<any[]>('/AllSensorData1').valueChanges().pipe(
+      take(1),
+      map((existingLogs: any[] | null) => existingLogs ? existingLogs : []),
+      map(existingLogs => [...existingLogs, ...sensorData1]) // Combine existing logs with new logs
+    ).subscribe((allLogs: any[]) => {
+      // Upload the combined logs to the Firebase Realtime Database
+      this.afDatabase.object('/AllSensorData1').set(allLogs)
+        .then(() => {
+          console.log('Sensor data uploaded successfully');
+        })
+        .catch((error) => {
+          console.error('Error uploading sensor data:', error);
+        });
     });
   }
   
