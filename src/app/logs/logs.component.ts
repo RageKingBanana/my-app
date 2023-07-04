@@ -3,7 +3,7 @@ import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { HttpClient } from '@angular/common/http';
 
 import { map, take } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { Observable, merge } from 'rxjs';
 import { selectedLogModel } from '../_shared/models/selectedlog.model';
 @Component({
   selector: 'app-logs',
@@ -46,19 +46,48 @@ export class LogsComponent {
   }
 
 
-  retrievelogs() {
-    this.afDatabase.list('/AllSensorData1').snapshotChanges().subscribe(sensorDataSnapshot => {
-      const sensorData = sensorDataSnapshot.map(dataSnapshot => {
-        const key = dataSnapshot.key;
-        const value = dataSnapshot.payload.val() as Record<string, any>;
-        return { key, ...value };
-      });
-      this.sensorData = sensorData;
-      console.log(sensorData, 'sensordata');
-this.getLocations(this.sensorData);
+
+//   retrievelogs() {
+// //     this.afDatabase.list('/AllSensorData1').snapshotChanges().subscribe(sensorDataSnapshot => {
+// //       const sensorData = sensorDataSnapshot.map(dataSnapshot => {
+// //         const key = dataSnapshot.key;
+// //         const value = dataSnapshot.payload.val() as Record<string, any>;
+// //         return { key, ...value };
+// //       });
+// //       this.sensorData = sensorData;
+// //       console.log(sensorData, 'sensordata');
+// // this.getLocations(this.sensorData);
       
-    });
-  }
+// //     });
+
+// merge(
+//   this.afDatabase.list('/Registered Users').snapshotChanges(),
+//   this.afDatabase.list('/AllSensorData1').snapshotChanges()
+// ).subscribe((sensorDataSnapshot: any[]) => {
+//   const sensorData1 = sensorDataSnapshot.map((dataSnapshot) => {
+//     const key = dataSnapshot.key;
+//     const value = dataSnapshot.payload.val() as Record<string, any>;
+//     return { key, ...value };
+//   });
+//   console.log(sensorData1,'sensordat1');
+// });
+
+ //  }
+
+ retrievelogs() {
+      this.afDatabase.list('/Logs').snapshotChanges().subscribe(sensorDataSnapshot => {
+        const sensorData = sensorDataSnapshot.map(dataSnapshot => {
+          const key = dataSnapshot.key;
+          const value = dataSnapshot.payload.val() as Record<string, any>;
+          return { key, ...value };
+        });
+        this.sensorData = sensorData;
+        console.log(sensorData, 'sensordata');
+ // this.getLocations(this.sensorData);
+      });
+ }
+
+  
 
 
   
