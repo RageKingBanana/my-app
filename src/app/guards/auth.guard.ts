@@ -16,12 +16,9 @@ export class AuthGuard {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Promise<boolean | UrlTree> {
       const user = await firstValueFrom(this.afAuth.authState);
-      const isAuthenticated = user !== null ? true : false;
-      if (!isAuthenticated) {
+      if (!user) {
         alert('You must be authenticated in order to access this page');
       }
-      return isAuthenticated;
+      return !!user;
   }
-
-
 }
