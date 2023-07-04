@@ -18,23 +18,24 @@ export class LogsComponent
 	registeredUsers2!: any[];
 	sensorData$: Observable<FilteredLogsData[]> = of([]);
 	sensorData2!: any[];
-	selectedUID!: string;
-	selectedLog: selectedLogModel = {
-		checker: "",
-		connected: 0,
-		flame: "",
-		flameStatus: "",
-		loc: "",
-		mq2: 0,
-		mq135Status: "",
-		status: "",
-		StatusNotif: "",
-		coordinates: "",
-		deviceId: "",
-		mq2status: "",
-		mq135: 0,
-		key: "",
-		location: "",
+	selectedUsers: UserData[] = [];
+	selectedLog: FilteredLogsData = {
+		userData: [],
+		sensorDataValues: {
+			mq2Status: "",
+			mq135Status: "",
+			flameStatus: "",
+			flame: false,
+			loc: "",
+			mq2: 0,
+			mq135: 0,
+			statusNotif: "",
+			status: "",
+			connected: 0,
+			checker: "",
+		},
+		timestamp: undefined,
+		key: undefined
 	};
 	highlighted = true;
 
@@ -84,19 +85,38 @@ export class LogsComponent
 				{
 					const key = dataSnapshot.key;
 					const value = dataSnapshot.payload.val() as Record<string, any>;
-					return {key, ...value}
+					return {key, ...value};
 				})),
+			tap(rawData => console.log({rawData})),
 			map((sensorData): FilteredLogsData[] =>
-				sensorData.map(data => ({
+				sensorData.map(data =>
+				{
 					// @ts-ignore
-					sensorDataValues: data.sensorDataValues,
-					// @ts-ignore
-					userData: data.userData,
-					// @ts-ignore
-					timestamp: data.timestamp,
-				}))),
-			map(sensorDataList => {
-				return sensorDataList.map(({sensorDataValues, userData, timestamp}) => {
+					const userData = Object.keys(data.userData).map(key =>
+					{
+						// @ts-ignore
+						const value = data.userData[key];
+						return {
+							key,
+							...value,
+						};
+					});
+
+					return ({
+						// @ts-ignore
+						key: data.key ?? undefined,
+						// @ts-ignore
+						sensorDataValues: data.sensorDataValues,
+						// @ts-ignore
+						userData,
+						// @ts-ignore
+						timestamp: data.timestamp,
+					});
+				})),
+			map(sensorDataList =>
+			{
+				return sensorDataList.map(({sensorDataValues, userData, timestamp}) =>
+				{
 
 					/// Editing the cell values example
 					sensorDataValues.flameStatus = sensorDataValues.flameStatus === "true" ? "FIRE" : "NO FIRE";
@@ -104,13 +124,14 @@ export class LogsComponent
 					return {
 						sensorDataValues,
 						userData,
-						timestamp
-					}
-				})
-			})
-			// tap(data => {
-			// 	console.log(data);
-			// })
+						timestamp,
+					};
+				});
+			}),
+			tap(finalData =>
+			{
+				console.log({finalData});
+			}),
 		);
 	}
 
@@ -168,24 +189,23 @@ export class LogsComponent
 		});
 	}
 
-	openModalConfirm(data: any)
+	openModalConfirm(data: FilteredLogsData)
 	{
 		console.log(data, "selected data");
-		const selectedLog = data;
-		if (selectedLog)
+		if (data)
 		{
 
-			this.selectedLog = selectedLog;
+			this.selectedLog = data;
 
-			console.log(selectedLog.flame, "OPENMODAL");
-			this.selectedUID = selectedLog.userId;
+			console.log(data.sensorDataValues.flame, "OPENMODAL");
+			this.selectedUsers = data.userData;
 			this.myModals.toArray()[0].nativeElement.classList.add("show");
 			this.myModals.toArray()[0].nativeElement.style.display = "block";
 			document.body.classList.add("modal-open");
 		}
 		else
 		{
-			console.log("User not found", selectedLog);
+			console.log("User not found", data);
 		}
 	}
 
@@ -253,11 +273,7 @@ export interface SensorDataValues
 
 export interface UserData
 {
-	[key: string]: UserDataValue;
-}
-
-interface UserDataValue
-{
+	key: string,
 	coordinates: string,
 	email: string,
 	fullName: string,
@@ -269,7 +285,8 @@ interface UserDataValue
 
 export interface FilteredLogsData
 {
+	key?: string,
 	sensorDataValues: SensorDataValues,
 	timestamp?: number | string,
-	userData: UserData
+	userData: UserData[]
 }
