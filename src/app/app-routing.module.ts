@@ -7,41 +7,35 @@ import { CrudUserComponent } from './crud-user/crud-user.component';
 import { AuthGuard } from './guards/auth.guard';
 import { EmployeeCrudComponent } from './employee-crud/employee-crud.component';
 const routes: Routes = [
-
   {
     path: 'login',
-    component: LoginComponent
+    component: LoginComponent,
   },
   {
     path: 'crud-user',
-    component:CrudUserComponent,
-    canActivate: [AuthGuard] // Apply the AuthGuard to this route
+    component: CrudUserComponent,
+    canActivate: [AuthGuard], // Apply the AuthGuard to this route
   },
   {
     path: 'app',
-    component: AppComponent 
+    component: AppComponent,
   },
 
   {
     path: '',
     redirectTo: 'login',
-    pathMatch: 'full'
+    pathMatch: 'full',
   },
 
   {
     path: 'employee-crud',
-    component:EmployeeCrudComponent,
+    component: EmployeeCrudComponent,
     canActivate: [AuthGuard], // Apply the AuthGuard to this route
-  }
-  
+  },
 ];
 
-
 @NgModule({
-  
-  imports: [RouterModule.forRoot(routes)
-  ,CommonModule,
-],
-  exports: [RouterModule]
+  imports: [RouterModule.forRoot(routes), CommonModule],
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

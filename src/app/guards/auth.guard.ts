@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
 import {AngularFireAuth} from "@angular/fire/compat/auth";
 import {AngularFireDatabase} from "@angular/fire/compat/database";
 import {AngularFireMessaging} from "@angular/fire/compat/messaging";
+import { firstValueFrom, lastValueFrom } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthGuard implements CanActivate {
+export class AuthGuard {
   constructor(
     private afAuth: AngularFireAuth
   ) { }
@@ -14,14 +15,12 @@ export class AuthGuard implements CanActivate {
   async canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Promise<boolean | UrlTree> {
-      const user = await this.afAuth.currentUser;
-      const isAuthenticated = user ? true : false;
+      const user = await firstValueFrom(this.afAuth.authState);
+      const isAuthenticated = user !== null ? true : false;
       if (!isAuthenticated) {
         alert('You must be authenticated in order to access this page');
       }
       return isAuthenticated;
-  
-
   }
 
 
