@@ -1,18 +1,22 @@
-import { Component } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { AngularFireDatabase } from '@angular/fire/compat/database';
-import { AngularFireMessaging } from '@angular/fire/compat/messaging';
-import { Router } from '@angular/router';
-import { firstValueFrom } from 'rxjs';
+import { Component } from "@angular/core";
+import { AngularFireAuth } from "@angular/fire/compat/auth";
+import { AngularFireDatabase } from "@angular/fire/compat/database";
+import { AngularFireMessaging } from "@angular/fire/compat/messaging";
+import { Router } from "@angular/router";
+import { firstValueFrom } from "rxjs";
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss'],
+  selector: "app-login",
+  templateUrl: "./login.component.html",
+  styleUrls: ["./login.component.scss"],
 })
 export class LoginComponent {
-  email!: string;
-  password!: string;
+  loginModel = {
+    Username: "",
+    Password: "",
+  };
+  errorMessage = "";
+  isLoading = false;
 
   constructor(
     private afAuth: AngularFireAuth,
@@ -21,13 +25,14 @@ export class LoginComponent {
     private router: Router
   ) {}
 
-  async onSubmit() {
-    const { email, password } = this;
+  async login() {
+    const { Username, Password } = this.loginModel;
 
     try {
+      this.isLoading = true;
       const { user } = await this.afAuth.signInWithEmailAndPassword(
-        email,
-        password
+        Username,
+        Password
       );
 
       if (user && user.emailVerified) {
@@ -37,16 +42,12 @@ export class LoginComponent {
         const snapshot = await firstValueFrom(userRef.valueChanges());
 
         if (snapshot) {
-          // User exists in the "Employees" node
-          console.log('You are logged in now');
-          this.router.navigate(['crud-user']);
-          // Continue with your authentication logic
+          console.log("You are logged in now");
+          this.router.navigate(["crud-user"]);
 
-          // Get the FCM registration token
           const token = await firstValueFrom(this.afMessaging.getToken);
 
           if (token) {
-            // Save the token to the Realtime Database
             const tokenRef = this.afDatabase.object(
               `/Employees/${userId}/token`
             );
@@ -54,15 +55,23 @@ export class LoginComponent {
             try {
               const tokenSetResult = await tokenRef.set(token);
 
-              console.log('Token value set successfully.');
+              console.log("Token value set successfully.");
             } catch (error) {
-              console.error('Error setting token value:', error);
+              console.error("Error setting token value:", error);
             }
           }
         }
       }
     } catch (error) {
-      console.error('Login error:', error);
+		console.error("Login error:", error);
+		this.errorMessage = (error as { message: string }).message;
+	  }
+	   finally {
+      this.isLoading = false;
     }
+  }
+
+  hasError(control: any) {
+    return control.invalid && (control.dirty || control.touched);
   }
 }

@@ -1,0 +1,11 @@
+.login-page {
+    background-image: url('/src/assets/images/peakpx.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh; /* Added to make the background cover the whole page */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
