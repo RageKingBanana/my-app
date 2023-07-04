@@ -43,6 +43,7 @@ export class LoginComponent
 				{
 					// User exists in the "Employees" node
 					console.log("You are logged in now");
+					this.router.navigate(['crud-user']);
 					// Continue with your authentication logic
 
 					// Get the FCM registration token
@@ -63,7 +64,7 @@ export class LoginComponent
 						{
 							console.error("Error setting token value:", error);
 						}
-						this.router.navigate(['crud-user']);
+			
 					}
 				}
 			}

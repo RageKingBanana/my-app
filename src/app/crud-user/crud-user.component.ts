@@ -162,7 +162,7 @@ export class CrudUserComponent implements OnInit{
           // Update the user data
           const userData = {
             location: this.selectedUser.location,
-            Recordings: this.selectedUser.Recordings,
+            //Recordings: this.selectedUser.Recordings,
             coordinates: this.selectedUser.coordinates,
             email: this.selectedUser.email,
             fullName: this.selectedUser.fullName,
