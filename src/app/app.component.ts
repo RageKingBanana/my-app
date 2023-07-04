@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 export class AppComponent {
   constructor(public afAuth: AngularFireAuth, private router: Router) {}
 
-  title = 'my-app';
+  title = 'PYRONNOIA';
 
   async logout() {
     try {
