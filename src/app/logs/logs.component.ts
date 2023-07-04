@@ -95,9 +95,22 @@ export class LogsComponent
 					// @ts-ignore
 					timestamp: data.timestamp,
 				}))),
-			tap(data => {
-				console.log(data);
+			map(sensorDataList => {
+				return sensorDataList.map(({sensorDataValues, userData, timestamp}) => {
+
+					/// Editing the cell values example
+					sensorDataValues.flameStatus = sensorDataValues.flameStatus === "true" ? "FIRE" : "NO FIRE";
+
+					return {
+						sensorDataValues,
+						userData,
+						timestamp
+					}
+				})
 			})
+			// tap(data => {
+			// 	console.log(data);
+			// })
 		);
 	}
 
