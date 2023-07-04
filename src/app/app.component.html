@@ -1,5 +1,5 @@
 <mat-sidenav-container class="example-container">
-  <mat-sidenav opened mode="side">
+  <mat-sidenav *ngIf="(afAuth.authState | async) !== null" opened mode="side">
     <mat-list>
       <mat-list-item>
         <a mat-menu-item routerLink="/" routerLinkActive="active-link">
