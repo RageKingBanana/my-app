@@ -11,7 +11,7 @@ import { selectedEmployeeModel } from '../_shared/models/selectedemployee.model'
   styleUrls: ['./employee-crud.component.scss']
 })
 export class EmployeeCrudComponent implements OnInit {
-  @ViewChildren('confirmModal, resultModal,exportModal') myModals!: QueryList<ElementRef>;
+  @ViewChildren('confirmModal, resultModal,exportModal,addModal') myModals!: QueryList<ElementRef>;
   isEditMode: boolean = false;
   employees!: any[];
   registeredUsers!: any[];
@@ -33,7 +33,6 @@ export class EmployeeCrudComponent implements OnInit {
 
   constructor(private afDatabase: AngularFireDatabase, private http: HttpClient) {
     this.retrieveEmployees();
-
     // this.retrieveSensorData();
     // this.retrieveSensorData2();
   }
@@ -56,14 +55,36 @@ export class EmployeeCrudComponent implements OnInit {
     const firebaseId = this.afDatabase.createPushId();
   
     // Save the new user data to the "Registered Users" database
-    this.afDatabase.object(`/Registered Users/${firebaseId}`).set(userData)
+    this.afDatabase.object(`/Employees/${firebaseId}`).set(userData)
       .then(() => {
-        console.log('User added successfully to Registered Users.');
+        console.log('User added successfully to Employees.');
+        this.closeAddModal();
+        this.openModalResult(true);
       })
       .catch((error) => {
         console.error('Error adding user:', error);
         // Handle error
+        this.closeAddModal();
+        this.openModalResult(false);
       });
+  }
+  openAddModal() {
+    this.myModals.toArray()[2].nativeElement.classList.add('show');
+    this.myModals.toArray()[2].nativeElement.style.display = 'block';
+    document.body.classList.add('modal-open');
+    
+  }
+
+  // closeAddModal() {
+  //   this.myModals[2].nativeElement.classList.remove('show');
+  //   this.myModals[2].nativeElement.style.display = 'none';
+  //   document.body.classList.remove('modal-open');
+  // }
+  
+  closeAddModal() {
+    this.myModals.toArray()[2].nativeElement.classList.remove('show');
+    this.myModals.toArray()[2].nativeElement.style.display = 'none';
+    document.body.classList.remove('modal-open');
   }
 
   retrieveEmployees() {
@@ -112,9 +133,6 @@ export class EmployeeCrudComponent implements OnInit {
       console.log('User not found', selectedUser);
     }
   }
-  
-  
-
 
   closeModalConfirm() {
     this.isEditMode = false;
@@ -242,10 +260,15 @@ export class EmployeeCrudComponent implements OnInit {
     this.myModals.toArray()[1].nativeElement.style.display = 'none';
     document.body.classList.remove('modal-open');
   }
+
+  
   
 
   highlighted = true;
   toggleOpacity() {
     this.highlighted = !this.highlighted;
   }
+
+
+  
 }

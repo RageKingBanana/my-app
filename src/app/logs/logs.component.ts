@@ -4,6 +4,7 @@ import {HttpClient} from "@angular/common/http";
 import {selectedLogModel} from "../_shared/models/selectedlog.model";
 import {Observable, of, tap} from "rxjs";
 import {catchError, map} from "rxjs/operators";
+import { SensorDataService } from "../services/SensorDataService";
 
 @Component({
 	selector: "app-logs",
@@ -40,7 +41,7 @@ export class LogsComponent
 	};
 	highlighted = true;
 
-	constructor(private afDatabase: AngularFireDatabase, private http: HttpClient)
+	constructor(private afDatabase: AngularFireDatabase, private http: HttpClient,private sensorDataService: SensorDataService)
 	{
 
 	}
@@ -108,6 +109,9 @@ export class LogsComponent
 				console.log({finalData});
 			}),
 		);
+		this.sensorData$.subscribe((sensorDataList: FilteredLogsData[]) => {
+			this.sensorDataService.setSensorData(sensorDataList);
+		  });
 	}
 
 

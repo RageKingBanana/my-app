@@ -24,8 +24,11 @@
       <mat-list-item>
         <a mat-menu-item routerLink="/logs" routerLinkActive="active-link">
           Logs
+          <mat-icon>notifications</mat-icon>
+          <span class="notification-count">{{ getUnreadNotificationCount() }}</span> <!-- Add the notification count here -->
         </a>
       </mat-list-item>
+      
       <mat-list-item>
         <button mat-button (click)="logout()">Logout</button>
       </mat-list-item>
