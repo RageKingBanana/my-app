@@ -36,87 +36,14 @@
     <td>{{ employee.gender }}</td>
     <td>{{ employee.mobile }}</td>
     <td>
-      <button type="button" class="btn btn-primary" >
+      <button type="button" class="btn btn-primary" (click)="openModalConfirm(employee.employeeId)" >
         <span class="bi bi-pencil"></span>
       </button>
     </td>
   </tr>
 </table>
 
-<!-- 
-<h2>Sensor Data</h2>
-<table class="table p-3 table-hover white-text" [style.background-color]="highlighted ? 'rgba(0, 0, 0, 0.9)' : 'rgba(255, 255, 255, 0.8)'">
 
-  <tr>
-    <th hidden>Id</th>
-    <th>Checker</th>
-    <th>Connected</th>
-    <th>Flame</th>
-    <th>Flame Status</th>
-    <th>mq135</th>
-    <th>mq135 Status</th>
-    <th>mq2</th>
-    <th>mq2 Status</th>
-    <th>Status</th>
-    <th>Status Notif</th>
-    <th>Update</th>
-  </tr>
-  <tr *ngFor="let data of sensorData">
-    <td hidden>{{ data.key }}</td>
-    <td>{{ data.checker }}</td>
-    <td>{{ data.connected }}</td>
-    <td>{{ data.flame }}</td>
-    <td>{{ data.flameStatus }}</td>
-    <td>{{ data.mq135 }}</td>
-    <td>{{ data.mq135Status }}</td>
-    <td>{{ data.mq2 }}</td>
-    <td>{{ data.mq2Status }}</td>
-    <td>{{ data.status }}</td>
-    <td>{{ data.statusNotif }}</td>
-    <td>
-      <button type="button" class="btn btn-primary">
-        <span class="bi bi-pencil"></span>
-      </button>
-    </td>
-  </tr>
-</table>
-
-<h2>Sensor Data 2</h2>
-<table class="table p-3 table-hover white-text" [style.background-color]="highlighted ? 'rgba(0, 0, 0, 0.9)' : 'rgba(255, 255, 255, 0.8)'">
-
-
-  <tr>
-    <th hidden>Id</th>
-    <th>Checker</th>
-    <th>Connected</th>
-    <th>Flame</th>
-    <th>Flame Status</th>
-    <th>mq135</th>
-    <th>mq135 Status</th>
-    <th>mq2</th>
-    <th>mq2 Status</th>
-    <th>Status</th>
-    <th>Status Notif</th>
-  </tr>
-  <tr *ngFor="let data of sensorData2">
-    <td hidden>{{ data.key }}</td>
-    <td>{{ data.checker }}</td>
-    <td>{{ data.connected }}</td>
-    <td>{{ data.flame }}</td>
-    <td>{{ data.flameStatus }}</td>
-    <td>{{ data.mq135 }}</td>
-    <td>{{ data.mq135Status }}</td>
-    <td>{{ data.mq2 }}</td>
-    <td>{{ data.mq2Status }}</td>
-    <td>{{ data.status }}</td>
-    <td>{{ data.statusNotif }}</td>
-    <td>
-      <button type="button" class="btn btn-primary">
-        <span class="bi bi-pencil"></span>
-      </button>
-    </td>
-  </tr>
-</table> -->
 
 <!-- Modal -->
 <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" #confirmModal>
@@ -124,6 +51,7 @@
     <div class="modal-content" style="background-color: black;">
       <div class="modal-header">
         <h5 class="modal-title" style="color:white;">Update Data</h5>
+        <button type="button" class="btn btn-danger" (click)="deleteEmployee()" data-dismiss="modal">DELETE</button>
       </div>
       <div class="modal-body">
         <div class="card-text" style="color:white; background-color: black;">
@@ -177,6 +105,24 @@
     </div>
   </div>
 </div>
+
+    <!-- Modal pass/fail-->
+    <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" #resultModal>
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">UPDATE STATUS:</h5>
+          </div>
+          <div class="modal-body">
+            <span id="update-success" style="display: none;">UPDATE SUCCESS</span>
+            <span id="update-fail" style="display: none;">UPDATE FAIL</span>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeModalResult()" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
 
   </div>

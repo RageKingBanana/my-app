@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { selectedUserMode } from '../_shared/models/selecteduser.model';
 import { map, take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { selectedEmployeeModel } from '../_shared/models/selectedemployee.model';
 @Component({
   selector: 'app-employee-crud',
   templateUrl: './employee-crud.component.html',
@@ -18,22 +19,21 @@ export class EmployeeCrudComponent implements OnInit {
   sensorData!: any[];
   sensorData2!: any[];
   selectedUID!:string;
-  selectedUser: selectedUserMode = {
-    location:'',
-    Recordings:'',
-    coordinates:'',
-    email:'',
-    fullName:'',
-    gender:'',
-    hashid:'',
-    mobile:'',
-    userId:'',
+  selectedUser: selectedEmployeeModel = {
+    coordinates: '',
+    email: '',
+    fullName: '',
+    gender: '',
+    hashid: '',
+    mobile: '',
+    location: '',
+    userId: '',
+    employeeId: ''
   }
 
   constructor(private afDatabase: AngularFireDatabase, private http: HttpClient) {
     this.retrieveEmployees();
-    this.retrieveRegisteredUsers();
-    this.retrieveRegisteredUsers2();
+
     // this.retrieveSensorData();
     // this.retrieveSensorData2();
   }
@@ -66,18 +66,6 @@ export class EmployeeCrudComponent implements OnInit {
       });
   }
 
-  retrieveRegisteredUsers2() {
-    this.afDatabase.list('/Registered Users2').snapshotChanges().subscribe(usersSnapshot => {
-      const registeredUsers2 = usersSnapshot.map(userSnapshot => {
-        const userId = userSnapshot.key;
-        const userData = userSnapshot.payload.val() as Record<string, any>;
-        return { userId, ...userData };
-      });
-      console.log(registeredUsers2,'REG2ITO');
-      this.registeredUsers2 = registeredUsers2;
-      this.getLocations(this.registeredUsers2);
-    });
-  }
   retrieveEmployees() {
     this.afDatabase.list('/Employees').snapshotChanges().subscribe(employeesSnapshot => {
       const employees = employeesSnapshot.map(employeeSnapshot => {
@@ -89,62 +77,6 @@ export class EmployeeCrudComponent implements OnInit {
       this.getLocations(this.employees);
     });
   }
-  
-  retrieveRegisteredUsers() {
-    this.afDatabase.list('/Registered Users').snapshotChanges().subscribe(usersSnapshot => {
-      const registeredUsers = usersSnapshot.map(userSnapshot => {
-        const userId = userSnapshot.key;
-        const userData = userSnapshot.payload.val() as Record<string, any>;
-        return { userId, ...userData };
-      });
-      this.registeredUsers = registeredUsers;
-      this.getLocations(this.registeredUsers);
-    });
-  }
-  
-  // retrieveSensorData2() {
-  //   this.afDatabase.list('/Sensor Data2').snapshotChanges().subscribe(sensorDataSnapshot => {
-  //     const sensorData2 = sensorDataSnapshot.map(dataSnapshot => {
-  //       const key = dataSnapshot.key;
-  //       const value = dataSnapshot.payload.val() as Record<string, any>;
-  //       return { key, ...value };
-  //     });
-  //     this.sensorData2 = sensorData2;
-  //     console.log(sensorData2);
-  //   });
-  // }
-  
-  // retrieveSensorData() {
-  //   this.afDatabase.list('/Sensor Data').snapshotChanges().subscribe(sensorDataSnapshot => {
-  //     const sensorData = sensorDataSnapshot.map(dataSnapshot => {
-  //       const key = dataSnapshot.key;
-  //       const value = dataSnapshot.payload.val() as Record<string, any>;
-  //       return { key, ...value };
-  //     });
-  //     this.sensorData = sensorData;
-  //     //this.uploadSensorData1(sensorData);
-  //     console.log(sensorData, 'sensordata');
-  //   });
-  // }
-
-  
-  // uploadSensorData1(sensorData1: any[]) {
-  //   // Fetch the existing logs from the Firebase Realtime Database
-  //   this.afDatabase.object<any[]>('/AllSensorData1').valueChanges().pipe(
-  //     take(1),
-  //     map((existingLogs: any[] | null) => existingLogs ? existingLogs : []),
-  //     map(existingLogs => [...existingLogs, ...sensorData1]) // Combine existing logs with new logs
-  //   ).subscribe((allLogs: any[]) => {
-  //     // Upload the combined logs to the Firebase Realtime Database
-  //     this.afDatabase.object('/AllSensorData1').set(allLogs)
-  //       .then(() => {
-  //         console.log('Sensor data uploaded successfully');
-  //       })
-  //       .catch((error) => {
-  //         console.error('Error uploading sensor data:', error);
-  //       });
-  //   });
-  // }
   
   getLocations(users: any[]): void {
     users.forEach(user => {
@@ -167,20 +99,21 @@ export class EmployeeCrudComponent implements OnInit {
     });
   }
 
-  openModalConfirm(userid: string) {
-    const selectedUser = this.registeredUsers.find(user => user.userId === userid);
+  openModalConfirm(employeeId: string) {
+    const selectedUser = this.employees.find(user => user.employeeId === employeeId);
     if (selectedUser) {
-
-    this.selectedUser = selectedUser;
-          console.log(selectedUser.userId,'OPENMODAL');
-    this.selectedUID=selectedUser.userId;
-    this.myModals.toArray()[0].nativeElement.classList.add('show');
-    this.myModals.toArray()[0].nativeElement.style.display = 'block';
-    document.body.classList.add('modal-open');
+      this.selectedUser = selectedUser;
+      console.log(selectedUser.employeeId, 'OPENMODAL');
+      this.selectedUID = selectedUser.employeeId;
+      this.myModals.toArray()[0].nativeElement.classList.add('show');
+      this.myModals.toArray()[0].nativeElement.style.display = 'block';
+      document.body.classList.add('modal-open');
     } else {
-      console.log('User not found',selectedUser);
+      console.log('User not found', selectedUser);
     }
   }
+  
+  
 
 
   closeModalConfirm() {
@@ -192,21 +125,19 @@ export class EmployeeCrudComponent implements OnInit {
 
   editTicket() {
     if (this.isEditMode) {
-      
-      const userId = this.selectedUser.userId;
+      const employeeId = this.selectedUser.employeeId;
   
-      // Find the user with the matching userId
-      const user = this.registeredUsers.find(u => u.userId === userId);
-  console.log(user.userId,'bago mag get')
-      if (user) {
-        // Get the Firebase ID (auto-generated) for the user
-        const firebaseId = user.userId;
+      // Find the employee with the matching employeeId
+      const employee = this.employees.find(e => e.employeeId === employeeId);
+  
+      if (employee) {
+        // Get the Firebase ID (auto-generated) for the employee
+        const firebaseId = employee.employeeId;
   
         if (firebaseId) {
-          // Update the user data
-          const userData = {
+          // Update the employee data
+          const employeeData = {
             location: this.selectedUser.location,
-            //Recordings: this.selectedUser.Recordings,
             coordinates: this.selectedUser.coordinates,
             email: this.selectedUser.email,
             fullName: this.selectedUser.fullName,
@@ -214,21 +145,27 @@ export class EmployeeCrudComponent implements OnInit {
             mobile: this.selectedUser.mobile
           };
   
-          // Save changes to the Firebase database using the Firebase ID and userId as reference
-          this.afDatabase.object(`/Registered Users/${firebaseId}`).update(userData)
+          // Save changes to the Firebase database using the Firebase ID and employeeId as reference
+          this.afDatabase.object(`/Employees/${firebaseId}`).update(employeeData)
             .then(() => {
-              console.log('User updated successfully.');
+              console.log('Employee updated successfully.');
               this.isEditMode = false;
+              this.closeModalConfirm();
+              this.openModalResult(true);
             })
             .catch((error) => {
-              console.error('Error updating user:', error);
+              console.error('Error updating employee:', error);
               // Handle error
             });
         } else {
-          console.log('Firebase ID not found for the user.');
+          console.log('Firebase ID not found for the employee.');
+          this.closeModalConfirm();
+          this.openModalResult(false);
         }
       } else {
-        console.log('User not found');
+        console.log('Employee not found');
+        this.closeModalConfirm();
+        this.openModalResult(false);
       }
     } else {
       // Enter edit mode
@@ -238,34 +175,73 @@ export class EmployeeCrudComponent implements OnInit {
   }
   
 
-  updateUser(hashid: string, newData: Partial<selectedUserMode>) {
-    const userId = 'Registered Users/User Id';
-    const userRef = this.afDatabase.object(`${userId}/${hashid}`);
-    
-    userRef.update(newData)
-      .then(() => {
-        console.log('User updated successfully');
-      })
-      .catch((error: any) => {
-        console.error('Error updating user:', error);
-      });
+  deleteEmployee() {
+    const employeeId = this.selectedUser.employeeId;
+  
+    // Find the employee with the matching employeeId
+    const employee = this.employees.find(e => e.employeeId === employeeId);
+  
+    if (employee) {
+      // Get the Firebase ID (auto-generated) for the employee
+      const firebaseId = employee.employeeId;
+  
+      if (firebaseId) {
+        // Remove the employee from the Firebase database using the Firebase ID
+        this.afDatabase.object(`/Employees/${firebaseId}`).remove()
+          .then(() => {
+            console.log('Employee deleted successfully.');
+            this.closeModalConfirm();
+            this.openModalResult(true);
+          })
+          .catch((error) => {
+            console.error('Error deleting employee:', error);
+            // Handle error
+            this.closeModalConfirm();
+            this.openModalResult(false);
+          });
+      } else {
+        console.log('Firebase ID not found for the employee.');
+        this.closeModalConfirm();
+        this.openModalResult(false);
+      }
+    } else {
+      console.log('Employee not found');
+      this.closeModalConfirm();
+      this.openModalResult(false);
+    }
   }
   
   
-    // deleteUsersWithIdNode() {
-  //   this.afDatabase.list('/Registered Users').snapshotChanges().subscribe((users) => {
-  //     users.forEach((user) => {
-  //       const userId = user.key; // Get the user ID
-        
-  //       const userRef = this.afDatabase.object(`/Registered Users/${userId}`);
-  //       userRef.snapshotChanges().subscribe((snapshot) => {
-  //         if (snapshot.payload.exists() && snapshot.payload.child('id').exists()) {
-  //           userRef.remove(); // Remove the user with the 'id' node
-  //         }
-  //       });
-  //     });
-  //   });
-  // }
+  openModalResult(success: boolean): void {
+    this.myModals.toArray()[1].nativeElement.classList.add('show');
+    this.myModals.toArray()[1].nativeElement.style.display = 'block';
+    document.body.classList.add('modal-open');
+
+    const successElement = document.getElementById("update-success");
+    const failElement = document.getElementById("update-fail");
+
+    if (success) {
+      if (successElement) {
+        successElement.style.display = "inline";
+      }
+      if (failElement) {
+        failElement.style.display = "none";
+      }
+    } else {
+      if (successElement) {
+        successElement.style.display = "none";
+      }
+      if (failElement) {
+        failElement.style.display = "inline";
+      }
+    }
+  }
+
+  closeModalResult(): void {
+    this.myModals.toArray()[1].nativeElement.classList.remove('show');
+    this.myModals.toArray()[1].nativeElement.style.display = 'none';
+    document.body.classList.remove('modal-open');
+  }
   
 
   highlighted = true;
