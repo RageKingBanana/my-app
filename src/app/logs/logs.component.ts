@@ -241,7 +241,6 @@ this.afDatabase.object(`/Logs/${key}`).update({ isread: true })
 		  // Add the table rows with the modal data
 		  const rows = [
 			{ label: 'Time Stamp:', value: this.selectedLog.timestamp || 'No TIME' },
-			{ label: 'Isread?:', value: this.selectedLog.isread || 'NOT YET READ' },
 			{ label: 'Location:', value: this.selectedLog.sensorDataValues.loc || 'N/A' },
 			{ label: 'Flame Sensor:', value: this.selectedLog.sensorDataValues.flame ? 'True' : 'False' },
 			{ label: 'MQ2 Sensor:', value: this.selectedLog.sensorDataValues.mq2 || 'N/A' },
