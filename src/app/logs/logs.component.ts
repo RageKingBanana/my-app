@@ -6,7 +6,11 @@ import {Observable, of, tap} from "rxjs";
 import {catchError, map} from "rxjs/operators";
 import { SensorDataService } from "../services/SensorDataService";
 import { stringify } from "uuid";
+import 'jspdf-autotable';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable'
 
+// import autoTable from 'jspdf-autotable'
 @Component({
 	selector: "app-logs",
 	templateUrl: "./logs.component.html",
@@ -209,6 +213,79 @@ this.afDatabase.object(`/Logs/${key}`).update({ isread: true })
 		document.body.classList.remove("modal-open");
 	}
 
+	exportPdf() {
+		//this.loadingmodal();
+	  
+		const doc = new jsPDF();
+	  
+		// Add the text "PYRONNOIA LOGS"
+		doc.setFontSize(18);
+		doc.text('PYRONNOIA LOGS', 70, 20); // Adjust the positioning of the text
+	  
+		// Add an image
+		const logo = new Image();
+		logo.src = 'assets/images/pyroicon.png';
+		logo.onload = () => {
+		  doc.addImage(logo, 'PNG', 10, 10, 25, 25); // Adjust the positioning and size as needed
+		  generateTable(); // Generate the table after the image is loaded
+		};
+	  
+		// Function to generate the table
+		const generateTable = () => {
+		  const table = document.createElement('table');
+		  table.className = 'table-borderless';
+		  table.style.width = '100%';
+	  
+		  const tbody = document.createElement('tbody');
+	  
+		  // Add the table rows with the modal data
+		  const rows = [
+			{ label: 'Time Stamp:', value: this.selectedLog.timestamp || 'No TIME' },
+			{ label: 'Isread?:', value: this.selectedLog.isread || 'NOT YET READ' },
+			{ label: 'Location:', value: this.selectedLog.sensorDataValues.loc || 'N/A' },
+			{ label: 'Flame Sensor:', value: this.selectedLog.sensorDataValues.flame ? 'True' : 'False' },
+			{ label: 'MQ2 Sensor:', value: this.selectedLog.sensorDataValues.mq2 || 'N/A' },
+			{ label: 'MQ135 Sensor:', value: this.selectedLog.sensorDataValues.mq135 || 'N/A' },
+			{ label: 'Users', value: this.selectedLog.userData.map((user) => user.fullName).join(', ') },
+			{ label: 'Email', value: this.selectedLog.userData.map((user) => user.email).join(', ') },
+			{ label: 'Mobile No.', value: this.selectedLog.userData.map((user) => user.mobile).join(', ') },
+		  ];
+	  
+		  rows.forEach((row) => {
+			const tr = document.createElement('tr');
+			const tdLabel = document.createElement('td');
+			const tdValue = document.createElement('td');
+	  
+			tdLabel.style.fontSize = '20px';
+			tdLabel.className = 'fw-bold';
+			tdLabel.innerText = row.label;
+			tdValue.style.fontSize = '20px';
+			tdValue.innerText = row.value.toString();
+	  
+			tr.appendChild(tdLabel);
+			tr.appendChild(tdValue);
+			tbody.appendChild(tr);
+		  });
+	  
+		  table.appendChild(tbody);
+	  
+		  // Export the table to PDF
+		  autoTable(doc, {
+			html: table,
+			startY: 50, // Adjust the startY value to leave space for the text and image
+			styles: {
+			  fontSize: 15,
+			},
+		  });
+	  
+		  doc.save('PyronnoiaReport.pdf');
+	  
+		  //this.closeLoadingModal();
+		};
+	  }
+	  
+	  
+	 
 
 }
 

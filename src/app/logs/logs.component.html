@@ -80,12 +80,6 @@
                   </td>
                 </tr>
                 <tr>
-                  <td style="font-size: 20px;" class="fw-bold">Isread?:</td>
-                  <td style="font-size: 20px;">
-                    <span selectedLog>{{ selectedLog.isread || 'NOT YET READ' }}</span>
-                  </td>
-                </tr>
-                <tr>
                   <td style="font-size: 20px;" class="fw-bold">Location:</td>
                   <td style="font-size: 20px;">
                     <span selectedLog>{{ selectedLog.sensorDataValues.loc || 'N/A' }}</span>
@@ -146,6 +140,8 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" (click)="closeModalConfirm()" data-dismiss="modal">Cancel
+            </button>
+            <button type="button" class="btn btn-danger" (click)="exportPdf()" data-dismiss="modal">EXPORT
             </button>
           </div>
         </div>
