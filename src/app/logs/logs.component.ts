@@ -19,6 +19,7 @@ export class LogsComponent
 	registeredUsers!: any[];
 	registeredUsers2!: any[];
 	sensorData$: Observable<FilteredLogsData[]> = of([]);
+	sensorDataKeys!: any[];
 	sensorData2!: any[];
   selectedLocation!:string;
 	selectedUsers: UserData[] = [];
@@ -53,6 +54,7 @@ export class LogsComponent
 	async ngOnInit(): Promise<void>
 	{
 		await this.retrievelogs();
+		this.retrievelogs2();
 	}
 
 	async retrievelogs()
@@ -143,44 +145,61 @@ export class LogsComponent
     );
   }
 
-  openModalConfirm(data: FilteredLogsData) {
-	console.log(data, "selected data");
-	if (data) {
-	  this.selectedLog = data;
-	  const place = data.sensorDataValues.loc;
-	  this.getLocationString(place).subscribe((formattedAddress) => {
-		this.selectedLog.sensorDataValues.loc = formattedAddress;
-	  });
-  
-	  console.log(data.sensorDataValues.flame, "OPENMODAL");
-	  this.selectedUsers = data.userData;
-	  console.log(this.selectedLog.key);
-	  console.log(this.selectedLog.isread, 'ISREAD');
-//   this.updateIsRead();
-	//   // Update isread to 'true' in Firebase
-	//   this.afDatabase
-	// 	.object(`/Logs/${data.key}/isread`)
-	// 	.set(true)
-	// 	.then(() => console.log('isread updated successfully in Firebase'))
-	// 	.catch((error) => console.log('Error updating isread in Firebase:', error));
-  
-	  this.myModals.toArray()[0].nativeElement.classList.add("show");
-	  this.myModals.toArray()[0].nativeElement.style.display = "block";
-	  document.body.classList.add("modal-open");
-	} else {
-	  console.log("User not found", data);
-	}
-  }
+  async openModalConfirm(data: FilteredLogsData, key: string)
+	{
+		await this.retrievelogs2(); // Wait for the keys to be retrieved
+  		console.log(data, "selected data");
+		console.log(key, "selected key");
+		if (data)
+		{
 
-  updateIsRead(selectedLogKey: string) {
-	const logRef = this.afDatabase.object(`/Logs/${selectedLogKey}/isread`);
-  console.log(logRef,'UPDATEISREAD');
-	// logRef
-	//   .set(true)
-	//   .then(() => console.log('isread updated successfully in Firebase'))
-	//   .catch((error) => console.log('Error updating isread in Firebase:', error));
-  }
-  
+			this.selectedLog = data;
+			console.log(this.selectedLog.key,'ISKEY');
+
+	  const place =data.sensorDataValues.loc;
+
+// Update the isread property to true for the selected log
+this.afDatabase.object(`/Logs/${key}`).update({ isread: true })
+.then(() => console.log('isread updated successfully in Firebase'))
+.catch((error) => console.log('Error updating isread in Firebase:', error));
+    //   console.log(data.sensorDataValues.loc,'SELECTED');
+      this.getLocationString(place).subscribe(
+        (formattedAddress) => {
+          this.selectedLog.sensorDataValues.loc = formattedAddress;
+        }
+      );
+      
+			console.log(data.sensorDataValues.flame, "OPENMODAL");
+			this.selectedUsers = data.userData;
+			console.log(this.selectedLog.isread,'ISREAD');
+			// this.selectedLog.isread = 'true'; 
+			// this.afDatabase.object(`/Logs/${data.key}`).update({ isread: 'true' })
+			// .then(() => console.log('isread updated successfully in Firebase'))
+			// .catch((error) => console.log('Error updating isread in Firebase:', error));
+
+			this.myModals.toArray()[0].nativeElement.classList.add("show");
+			this.myModals.toArray()[0].nativeElement.style.display = "block";
+			document.body.classList.add("modal-open");
+		}
+		else
+		{
+			console.log("User not found", data);
+		}
+	}
+	
+
+
+	retrievelogs2() {
+	  this.afDatabase.list('/Logs').snapshotChanges().subscribe(sensorDataSnapshot => {
+		this.sensorDataKeys = sensorDataSnapshot
+		  .map(dataSnapshot => dataSnapshot.key)
+		  .filter(key => !!key); // Filter out null values
+		// console.log(this.sensorDataKeys, 'sensordata keys');
+	  });
+	}
+	
+	  
+
 	closeModalConfirm()
 	{
 
