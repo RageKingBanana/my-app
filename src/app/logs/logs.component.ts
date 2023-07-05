@@ -5,6 +5,7 @@ import {selectedLogModel} from "../_shared/models/selectedlog.model";
 import {Observable, of, tap} from "rxjs";
 import {catchError, map} from "rxjs/operators";
 import { SensorDataService } from "../services/SensorDataService";
+import { stringify } from "uuid";
 
 @Component({
 	selector: "app-logs",
@@ -37,7 +38,8 @@ export class LogsComponent
 			checker: "",
 		},
 		timestamp: undefined,
-		key: undefined
+		key: undefined,
+		isread:'false'
 	};
 	highlighted = true;
 
@@ -87,11 +89,13 @@ export class LogsComponent
 						userData,
 						// @ts-ignore
 						timestamp: data.timestamp,
+						// @ts-ignore
+						isread:data.isread,
 					});
 				})),
 			map(sensorDataList =>
 			{
-				return sensorDataList.map(({sensorDataValues, userData, timestamp}) =>
+				return sensorDataList.map(({sensorDataValues, userData, timestamp,isread}) =>
 				{
 
 					/// Editing the cell values example
@@ -101,6 +105,7 @@ export class LogsComponent
 						sensorDataValues,
 						userData,
 						timestamp,
+						isread
 					};
 				});
 			}),
@@ -138,34 +143,44 @@ export class LogsComponent
     );
   }
 
-	openModalConfirm(data: FilteredLogsData)
-	{
-		console.log(data, "selected data");
-		if (data)
-		{
-
-			this.selectedLog = data;
-      const place =data.sensorDataValues.loc;
-      console.log(place,'SELECTED');
-      console.log(data.sensorDataValues.loc,'SELECTED');
-      this.getLocationString(place).subscribe(
-        (formattedAddress) => {
-          this.selectedLog.sensorDataValues.loc = formattedAddress;
-        }
-      );
-      
-			console.log(data.sensorDataValues.flame, "OPENMODAL");
-			this.selectedUsers = data.userData;
-			this.myModals.toArray()[0].nativeElement.classList.add("show");
-			this.myModals.toArray()[0].nativeElement.style.display = "block";
-			document.body.classList.add("modal-open");
-		}
-		else
-		{
-			console.log("User not found", data);
-		}
+  openModalConfirm(data: FilteredLogsData) {
+	console.log(data, "selected data");
+	if (data) {
+	  this.selectedLog = data;
+	  const place = data.sensorDataValues.loc;
+	  this.getLocationString(place).subscribe((formattedAddress) => {
+		this.selectedLog.sensorDataValues.loc = formattedAddress;
+	  });
+  
+	  console.log(data.sensorDataValues.flame, "OPENMODAL");
+	  this.selectedUsers = data.userData;
+	  console.log(this.selectedLog.key);
+	  console.log(this.selectedLog.isread, 'ISREAD');
+//   this.updateIsRead();
+	//   // Update isread to 'true' in Firebase
+	//   this.afDatabase
+	// 	.object(`/Logs/${data.key}/isread`)
+	// 	.set(true)
+	// 	.then(() => console.log('isread updated successfully in Firebase'))
+	// 	.catch((error) => console.log('Error updating isread in Firebase:', error));
+  
+	  this.myModals.toArray()[0].nativeElement.classList.add("show");
+	  this.myModals.toArray()[0].nativeElement.style.display = "block";
+	  document.body.classList.add("modal-open");
+	} else {
+	  console.log("User not found", data);
 	}
+  }
 
+  updateIsRead(selectedLogKey: string) {
+	const logRef = this.afDatabase.object(`/Logs/${selectedLogKey}/isread`);
+  console.log(logRef,'UPDATEISREAD');
+	// logRef
+	//   .set(true)
+	//   .then(() => console.log('isread updated successfully in Firebase'))
+	//   .catch((error) => console.log('Error updating isread in Firebase:', error));
+  }
+  
 	closeModalConfirm()
 	{
 
@@ -176,41 +191,6 @@ export class LogsComponent
 	}
 
 
-	// deleteUsersWithIdNode() {
-	//   this.afDatabase.list('/Registered Users').snapshotChanges().subscribe((users) => {
-	//     users.forEach((user) => {
-	//       const userId = user.key; // Get the user ID
-
-	//       const userRef = this.afDatabase.object(`/Registered Users/${userId}`);
-	//       userRef.snapshotChanges().subscribe((snapshot) => {
-	//         if (snapshot.payload.exists() && snapshot.payload.child('id').exists()) {
-	//           userRef.remove(); // Remove the user with the 'id' node
-	//         }
-	//       });
-	//     });
-	//   });
-	// }
-
-	updateUser(hashid: string, newData: Partial<selectedLogModel>)
-	{
-		const userId = "Registered Users/User Id";
-		const userRef = this.afDatabase.object(`${userId}/${hashid}`);
-
-		userRef.update(newData)
-			.then(() =>
-			{
-				console.log("User updated successfully");
-			})
-			.catch((error: any) =>
-			{
-				console.error("Error updating user:", error);
-			});
-	}
-
-	toggleOpacity()
-	{
-		this.highlighted = !this.highlighted;
-	}
 }
 
 export interface SensorDataValues
@@ -245,5 +225,6 @@ export interface FilteredLogsData
 	key?: string,
 	sensorDataValues: SensorDataValues,
 	timestamp?: number | string,
-	userData: UserData[]
+	userData: UserData[],
+	isread?:string
 }

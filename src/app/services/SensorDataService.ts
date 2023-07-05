@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { FilteredLogsData } from '../_shared/models/filterlogs.model';
+import { Observable, BehaviorSubject, map, tap } from 'rxjs';
+import { FilteredLogsData } from '../logs/logs.component';
 
 @Injectable({
   providedIn: 'root'
@@ -14,5 +14,12 @@ export class SensorDataService {
 
   setSensorData(sensorData: FilteredLogsData[]): void {
     this.sensorDataSubject.next(sensorData);
+  }
+
+  getUnreadSensorDataCount(): Observable<number> {
+    return this.sensorDataSubject.pipe(
+      map((sensorData) => sensorData.filter(data => data.isread == 'false').length),
+      tap((unreadCount) => console.log('Unread Notification Count:', unreadCount))
+    );
   }
 }

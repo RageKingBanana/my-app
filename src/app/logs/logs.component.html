@@ -69,12 +69,18 @@
             <div class="card-text" style="color:white; background-color: black;">
               <table class="table-borderless" style="width: 100%;">
                 <tbody>
-                  <tr>
-                    <td style="font-size: 20px;" class="fw-bold">Time Stamp:</td>
-                    <td style="font-size: 20px;">
-                      <span selectedLog>{{ selectedLog.timestamp || 'No TIME' }}</span>
-                    </td>
-                  </tr>
+                <tr>
+                  <td style="font-size: 20px;" class="fw-bold">Time Stamp:</td>
+                  <td style="font-size: 20px;">
+                    <span selectedLog>{{ selectedLog.timestamp || 'No TIME' }}</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="font-size: 20px;" class="fw-bold">Isread?:</td>
+                  <td style="font-size: 20px;">
+                    <span selectedLog>{{ selectedLog.isread || 'NOT YET READ' }}</span>
+                  </td>
+                </tr>
                 <tr>
                   <td style="font-size: 20px;" class="fw-bold">Location:</td>
                   <td style="font-size: 20px;">
