@@ -3,7 +3,7 @@ import {AngularFireDatabase} from "@angular/fire/compat/database";
 import {HttpClient} from "@angular/common/http";
 import {selectedLogModel} from "../_shared/models/selectedlog.model";
 import {Observable, of, tap} from "rxjs";
-import {map} from "rxjs/operators";
+import {catchError, map} from "rxjs/operators";
 
 @Component({
 	selector: "app-logs",
@@ -18,6 +18,7 @@ export class LogsComponent
 	registeredUsers2!: any[];
 	sensorData$: Observable<FilteredLogsData[]> = of([]);
 	sensorData2!: any[];
+  selectedLocation!:string;
 	selectedUsers: UserData[] = [];
 	selectedLog: FilteredLogsData = {
 		userData: [],
@@ -45,32 +46,6 @@ export class LogsComponent
 	}
 
 
-//   retrievelogs() {
-// //     this.afDatabase.list('/AllSensorData1').snapshotChanges().subscribe(sensorDataSnapshot => {
-// //       const sensorData = sensorDataSnapshot.map(dataSnapshot => {
-// //         const key = dataSnapshot.key;
-// //         const value = dataSnapshot.payload.val() as Record<string, any>;
-// //         return { key, ...value };
-// //       });
-// //       this.sensorData = sensorData;
-// //       console.log(sensorData, 'sensordata');
-// // this.getLocations(this.sensorData);
-
-// //     });
-
-// merge(
-//   this.afDatabase.list('/Registered Users').snapshotChanges(),
-//   this.afDatabase.list('/AllSensorData1').snapshotChanges()
-// ).subscribe((sensorDataSnapshot: any[]) => {
-//   const sensorData1 = sensorDataSnapshot.map((dataSnapshot) => {
-//     const key = dataSnapshot.key;
-//     const value = dataSnapshot.payload.val() as Record<string, any>;
-//     return { key, ...value };
-//   });
-//   console.log(sensorData1,'sensordat1');
-// });
-
-	//  }
 
 	async ngOnInit(): Promise<void>
 	{
@@ -135,59 +110,29 @@ export class LogsComponent
 		);
 	}
 
-	// openModalConfirm(data: any) {
-	//   console.log(data, 'selected data');
-	//   const selectedLog = data;
 
-	//   if (selectedLog) {
-	//     const [latitude, longitude] = selectedLog.loc.split(',');
-	//     const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=YOUR_API_KEY`;
-
-	//     this.http.get<any>(apiUrl).subscribe(
-	//       (locationData) => {
-	//         if (locationData.status === 'OK' && locationData.results.length > 0) {
-	//           const locationString = locationData.results[0].formatted_address;
-	//           selectedLog.location = locationString;
-	//           this.selectedLog = selectedLog;
-	//           console.log(selectedLog.flame, 'OPENMODAL');
-	//           this.selectedUID = selectedLog.userId;
-	//           this.myModals.toArray()[0].nativeElement.classList.add('show');
-	//           this.myModals.toArray()[0].nativeElement.style.display = 'block';
-	//           document.body.classList.add('modal-open');
-	//         }
-	//       },
-	//       (error) => {
-	//         console.log('Error fetching location data:', error);
-	//       }
-	//     );
-	//   } else {
-	//     console.log('User not found', selectedLog);
-	//   }
-	// }
-
-	getLocations(users: any[]): void
-	{
-		users.forEach(user =>
-		{
-			const [latitude, longitude] = user.loc.split(",");
-			const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyAKEou6JOvFfcgPt_G-W3cGXnGn-g8W82w`;
-
-			this.http.get<any>(apiUrl).subscribe(
-				(data) =>
-				{
-					if (data.status === "OK" && data.results.length > 0)
-					{
-						const locationString = data.results[0].formatted_address;
-						user.location = locationString;
-					}
-				},
-				(error) =>
-				{
-					console.log("Error fetching location data:", error);
-				},
-			);
-		});
-	}
+  getLocationString(coordinates: string): Observable<string> {
+    if (!coordinates) {
+      return of('');
+    }
+  
+    const [latitude, longitude] = coordinates.split(',');
+    const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyAKEou6JOvFfcgPt_G-W3cGXnGn-g8W82w`;
+  
+    return this.http.get<any>(apiUrl).pipe(
+      map((data) => {
+        if (data.status === 'OK' && data.results.length > 0) {
+          return data.results[0].formatted_address;
+        } else {
+          throw new Error('Unable to fetch location data');
+        }
+      }),
+      catchError((error) => {
+        console.log('Error fetching location data:', error);
+        return of('N/A');
+      })
+    );
+  }
 
 	openModalConfirm(data: FilteredLogsData)
 	{
@@ -196,7 +141,15 @@ export class LogsComponent
 		{
 
 			this.selectedLog = data;
-
+      const place =data.sensorDataValues.loc;
+      console.log(place,'SELECTED');
+      console.log(data.sensorDataValues.loc,'SELECTED');
+      this.getLocationString(place).subscribe(
+        (formattedAddress) => {
+          this.selectedLog.sensorDataValues.loc = formattedAddress;
+        }
+      );
+      
 			console.log(data.sensorDataValues.flame, "OPENMODAL");
 			this.selectedUsers = data.userData;
 			this.myModals.toArray()[0].nativeElement.classList.add("show");

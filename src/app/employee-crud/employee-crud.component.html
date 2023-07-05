@@ -16,11 +16,12 @@
     }
   </style>
 <h2>Employees</h2>
+<button type="button" class="btn btn-primary"  (click)="addEmployee()">Add User</button>
 <table class="table p-3 table-hover white-text" [style.background-color]="highlighted ? 'rgba(0, 0, 0, 0.9)' : 'rgba(255, 255, 255, 0.8)'">
 
   <tr>
     <th hidden>Id</th>
-    <th>Location</th>
+    <th>Employee Tag</th>
     <th>Email</th>
     <th>Full Name</th>
     <th>Gender</th>
@@ -28,8 +29,8 @@
     <th>Update</th>
   </tr>
   <tr *ngFor="let employee of employees">
-    <td hidden>{{ employee.employeeId }}</td>
-    <td>{{ employee.location }}</td>
+    <td >{{ employee.employeeId }}</td>
+    <!-- <td>{{ employee.location }}</td> -->
     <td>{{ employee.email }}</td>
     <td>{{ employee.fullName }}</td>
     <td>{{ employee.gender }}</td>
@@ -42,7 +43,7 @@
   </tr>
 </table>
 
-
+<!-- 
 <h2>Sensor Data</h2>
 <table class="table p-3 table-hover white-text" [style.background-color]="highlighted ? 'rgba(0, 0, 0, 0.9)' : 'rgba(255, 255, 255, 0.8)'">
 
@@ -115,7 +116,7 @@
       </button>
     </td>
   </tr>
-</table>
+</table> -->
 
 <!-- Modal -->
 <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" #confirmModal>

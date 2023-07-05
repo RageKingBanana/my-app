@@ -34,13 +34,37 @@ export class EmployeeCrudComponent implements OnInit {
     this.retrieveEmployees();
     this.retrieveRegisteredUsers();
     this.retrieveRegisteredUsers2();
-    this.retrieveSensorData();
-    this.retrieveSensorData2();
+    // this.retrieveSensorData();
+    // this.retrieveSensorData2();
   }
   ngOnInit(): void {
     throw new Error('Method not implemented.');
   }
 
+
+  addEmployee() {
+    const userData = {
+      location: this.selectedUser.location,
+      coordinates: this.selectedUser.coordinates,
+      email: this.selectedUser.email,
+      fullName: this.selectedUser.fullName,
+      gender: this.selectedUser.gender,
+      mobile: this.selectedUser.mobile
+    };
+  
+    // Generate a new Firebase ID for the user
+    const firebaseId = this.afDatabase.createPushId();
+  
+    // Save the new user data to the "Registered Users" database
+    this.afDatabase.object(`/Registered Users/${firebaseId}`).set(userData)
+      .then(() => {
+        console.log('User added successfully to Registered Users.');
+      })
+      .catch((error) => {
+        console.error('Error adding user:', error);
+        // Handle error
+      });
+  }
 
   retrieveRegisteredUsers2() {
     this.afDatabase.list('/Registered Users2').snapshotChanges().subscribe(usersSnapshot => {
@@ -78,61 +102,49 @@ export class EmployeeCrudComponent implements OnInit {
     });
   }
   
-  retrieveSensorData2() {
-    this.afDatabase.list('/Sensor Data2').snapshotChanges().subscribe(sensorDataSnapshot => {
-      const sensorData2 = sensorDataSnapshot.map(dataSnapshot => {
-        const key = dataSnapshot.key;
-        const value = dataSnapshot.payload.val() as Record<string, any>;
-        return { key, ...value };
-      });
-      this.sensorData = sensorData2;
-      console.log(sensorData2);
-    });
-  }
-  
-  retrieveSensorData() {
-    this.afDatabase.list('/Sensor Data').snapshotChanges().subscribe(sensorDataSnapshot => {
-      const sensorData = sensorDataSnapshot.map(dataSnapshot => {
-        const key = dataSnapshot.key;
-        const value = dataSnapshot.payload.val() as Record<string, any>;
-        return { key, ...value };
-      });
-      this.sensorData2 = sensorData;
-      this.uploadSensorData1(sensorData);
-      console.log(sensorData, 'sensordata');
-    });
-  }
-  // retrievelogs() {
-  //   this.afDatabase.list('/AllSensorData2').snapshotChanges().subscribe(sensorDataSnapshot => {
+  // retrieveSensorData2() {
+  //   this.afDatabase.list('/Sensor Data2').snapshotChanges().subscribe(sensorDataSnapshot => {
   //     const sensorData2 = sensorDataSnapshot.map(dataSnapshot => {
   //       const key = dataSnapshot.key;
   //       const value = dataSnapshot.payload.val() as Record<string, any>;
   //       return { key, ...value };
   //     });
   //     this.sensorData2 = sensorData2;
-  //    // this.uploadSensorData2(sensorData2);
-  //     console.log(sensorData2, 'sensordata2');
+  //     console.log(sensorData2);
+  //   });
+  // }
+  
+  // retrieveSensorData() {
+  //   this.afDatabase.list('/Sensor Data').snapshotChanges().subscribe(sensorDataSnapshot => {
+  //     const sensorData = sensorDataSnapshot.map(dataSnapshot => {
+  //       const key = dataSnapshot.key;
+  //       const value = dataSnapshot.payload.val() as Record<string, any>;
+  //       return { key, ...value };
+  //     });
+  //     this.sensorData = sensorData;
+  //     //this.uploadSensorData1(sensorData);
+  //     console.log(sensorData, 'sensordata');
   //   });
   // }
 
   
-  uploadSensorData1(sensorData1: any[]) {
-    // Fetch the existing logs from the Firebase Realtime Database
-    this.afDatabase.object<any[]>('/AllSensorData1').valueChanges().pipe(
-      take(1),
-      map((existingLogs: any[] | null) => existingLogs ? existingLogs : []),
-      map(existingLogs => [...existingLogs, ...sensorData1]) // Combine existing logs with new logs
-    ).subscribe((allLogs: any[]) => {
-      // Upload the combined logs to the Firebase Realtime Database
-      this.afDatabase.object('/AllSensorData1').set(allLogs)
-        .then(() => {
-          console.log('Sensor data uploaded successfully');
-        })
-        .catch((error) => {
-          console.error('Error uploading sensor data:', error);
-        });
-    });
-  }
+  // uploadSensorData1(sensorData1: any[]) {
+  //   // Fetch the existing logs from the Firebase Realtime Database
+  //   this.afDatabase.object<any[]>('/AllSensorData1').valueChanges().pipe(
+  //     take(1),
+  //     map((existingLogs: any[] | null) => existingLogs ? existingLogs : []),
+  //     map(existingLogs => [...existingLogs, ...sensorData1]) // Combine existing logs with new logs
+  //   ).subscribe((allLogs: any[]) => {
+  //     // Upload the combined logs to the Firebase Realtime Database
+  //     this.afDatabase.object('/AllSensorData1').set(allLogs)
+  //       .then(() => {
+  //         console.log('Sensor data uploaded successfully');
+  //       })
+  //       .catch((error) => {
+  //         console.error('Error uploading sensor data:', error);
+  //       });
+  //   });
+  // }
   
   getLocations(users: any[]): void {
     users.forEach(user => {
@@ -173,7 +185,6 @@ export class EmployeeCrudComponent implements OnInit {
 
   closeModalConfirm() {
     this.isEditMode = false;
-    //this.searchBooklet();
     this.myModals.toArray()[0].nativeElement.classList.remove('show');
     this.myModals.toArray()[0].nativeElement.style.display = 'none';
     document.body.classList.remove('modal-open');

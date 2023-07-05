@@ -69,6 +69,12 @@
             <div class="card-text" style="color:white; background-color: black;">
               <table class="table-borderless" style="width: 100%;">
                 <tbody>
+                  <tr>
+                    <td style="font-size: 20px;" class="fw-bold">Time Stamp:</td>
+                    <td style="font-size: 20px;">
+                      <span selectedLog>{{ selectedLog.timestamp || 'No TIME' }}</span>
+                    </td>
+                  </tr>
                 <tr>
                   <td style="font-size: 20px;" class="fw-bold">Location:</td>
                   <td style="font-size: 20px;">
@@ -93,6 +99,13 @@
                     <span selectedLog>{{ selectedLog.sensorDataValues.mq135 || 'N/A' }}</span>
                   </td>
                 </tr>
+                <!-- <tr>
+                  <td style="font-size: 20px;" class="fw-bold">Location:</td>
+                  <td style="font-size: 20px;">
+                    <span selectedLog>{{ getLocationString(selectedLog.sensorDataValues.loc) || 'N/A' }}</span>
+                  </td>
+                </tr> -->
+
                 <!-- <tr> -->
                 <!--   <td style="font-size: 20px;" class="fw-bold">Key:</td> -->
                 <!--   <td style="font-size: 20px;"> -->
@@ -105,7 +118,27 @@
                   <td style="font-size: 20px;">
                     <ul>
                       <li *ngFor="let selectedUser of selectedLog.userData">
-                        {{selectedUser.email}} - {{selectedUser.coordinates}}
+                        {{selectedUser.fullName}}
+                      </li>
+                    </ul>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="font-size: 20px;" class="fw-bold">Email</td>
+                  <td style="font-size: 20px;">
+                    <ul>
+                      <li *ngFor="let selectedUser of selectedLog.userData">
+                        {{selectedUser.email}} 
+                      </li>
+                    </ul>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="font-size: 20px;" class="fw-bold">Mobile No.</td>
+                  <td style="font-size: 20px;">
+                    <ul>
+                      <li *ngFor="let selectedUser of selectedLog.userData">
+                        {{selectedUser.mobile}}
                       </li>
                     </ul>
                   </td>
