@@ -9,19 +9,19 @@
 
   <div class="crud-user-reponses p-3"
        style="height: 900px; overflow-y: scroll; background-image: url('assets/images/firetruck.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
-    <style>
+    <!-- <style>
       .white-text th,
       .white-text td {
         color: white;
         padding: 10px; /* Add padding to create space between columns */
       }
-    </style>
+    </style> -->
 
     <h2>Logs</h2>
     <table class="table p-3 table-hover white-text"
     [style.background-color]="highlighted ? 'rgba(0, 0, 0, 0.9)' : 'rgba(255, 255, 255, 0.8)'">
 
-<tr>
+<tr  [style.color]="'white'">
  <th>Key</th>
  <!-- <th>Checker</th> -->
  <!-- <th>Connected</th> -->
@@ -33,32 +33,39 @@
  <th>mq2 Status</th>
  <th>Status</th>
  <th>Status Notif</th>
- <th>Details</th>
+ <th>Status</th>
 </tr>
 <ng-container *ngIf="sensorData$ | async as sensorData">
  <ng-container *ngFor="let data of sensorData; let i = index">
-   <tr>
+  <tr *ngFor="let data of sensorData$ | async; let i = index"
+    [style.background-color]="data.isread === 'false' ? 'darkred' : ''"
+    [style.color]="data.isread === 'false' ? 'black' : 'white'">
      <td>{{ sensorDataKeys[i] }}</td>
+     <!-- <td>{{ data.isread }}</td> -->
      <!--<td>{{ data.checker }}</td> -->
      <!-- <td>{{ data.connected }}</td> -->
      <!-- <td>{{ data.flame }}</td> -->
      <td>{{ data.sensorDataValues.flameStatus}}</td>
-     <!-- <td>{{ data.mq135 }}</td> -->
      <td>{{ data.sensorDataValues.mq135Status }}</td>
+     <!-- <td>{{ data.mq135 }}</td> -->
      <!-- <td>{{ data.mq2 }}</td> -->
      <td>{{ data.sensorDataValues.mq2Status}}</td>
      <td>{{ data.sensorDataValues.status }}</td>
      <td>{{ data.sensorDataValues.statusNotif }}</td>
      <td>
-       <button type="button" class="btn btn-primary" (click)="openModalConfirm(data,sensorDataKeys[i])">
-         <span class="bi bi-pencil"></span>
-       </button>
+      <button type="button" class="btn"
+        [ngClass]="data.isread === 'false' ? 'btn-dark' : 'btn-light'"
+        (click)="openModalConfirm(data, sensorDataKeys[i])">
+        <span class="bi bi-pencil" [style.color]="data.isread === 'false' ? 'red' : ''"></span>
+      </button>
      </td>
    </tr>
  </ng-container>
 </ng-container>
 
 </table>
+
+
 
 
     <!-- Modal -->

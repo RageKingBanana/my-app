@@ -106,6 +106,8 @@ export class LogsComponent
 
 					/// Editing the cell values example
 					sensorDataValues.flameStatus = sensorDataValues.flameStatus === "true" ? "FIRE" : "NO FIRE";
+					sensorDataValues.mq2Status = sensorDataValues.mq2Status === "true" ? "GAS LEAK" : "NO GAS LEAK";
+					sensorDataValues.mq135Status = sensorDataValues.mq135Status === "true" ? "SMOKE DETECTED" : "SMOKE";
 
 					return {
 						sensorDataValues,
