@@ -5,6 +5,13 @@ import { selectedUserMode } from '../_shared/models/selecteduser.model';
 import { map, take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { selectedEmployeeModel } from '../_shared/models/selectedemployee.model';
+import * as firebase from 'firebase/app';
+import 'firebase/auth';
+import 'firebase/database';
+import angular from 'angular';
+import angularFire from 'angularfire';
+
+
 @Component({
   selector: 'app-employee-crud',
   templateUrl: './employee-crud.component.html',
@@ -261,6 +268,28 @@ export class EmployeeCrudComponent implements OnInit {
     document.body.classList.remove('modal-open');
   }
 
+  signUp(email: string, password: string) {
+    firebase.auth().createUserWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        // User account created successfully
+        const user = userCredential.user;
+        
+        // Send email verification
+        user.sendEmailVerification()
+          .then(() => {
+            // Email verification sent
+            console.log('Email verification sent');
+          })
+          .catch((error) => {
+            // Error sending email verification
+            console.error('Error sending email verification:', error);
+          });
+      })
+      .catch((error) => {
+        // Error creating user account
+        console.error('Error creating user account:', error);
+      });
+  }
   
   
 

@@ -43,7 +43,7 @@ export class LoginComponent {
 
         if (snapshot) {
           console.log("You are logged in now");
-          this.router.navigate(["crud-user"]);
+          this.router.navigate(["logs"]);
 
           const token = await firstValueFrom(this.afMessaging.getToken);
 
