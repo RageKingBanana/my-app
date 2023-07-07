@@ -7,7 +7,8 @@
     mobile:string,
     location:string,
     userId:string,
-    employeeId:string
+    employeeId:string,
+    password:string
   }
   
   

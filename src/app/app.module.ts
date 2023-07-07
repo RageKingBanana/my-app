@@ -19,7 +19,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { EmployeeCrudComponent } from './employee-crud/employee-crud.component';
 import { LogsComponent } from './logs/logs.component';
-
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 @NgModule({
   declarations: [
     AppComponent,
@@ -33,6 +33,7 @@ import { LogsComponent } from './logs/logs.component';
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireDatabaseModule,
+    AngularFireAuthModule,
     FormsModule,
     BrowserAnimationsModule,
     MatSidenavModule,

@@ -5,12 +5,7 @@ import { selectedUserMode } from '../_shared/models/selecteduser.model';
 import { map, take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { selectedEmployeeModel } from '../_shared/models/selectedemployee.model';
-import * as firebase from 'firebase/app';
-import 'firebase/auth';
-import 'firebase/database';
-import angular from 'angular';
-import angularFire from 'angularfire';
-
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 @Component({
   selector: 'app-employee-crud',
@@ -35,10 +30,11 @@ export class EmployeeCrudComponent implements OnInit {
     mobile: '',
     location: '',
     userId: '',
-    employeeId: ''
+    employeeId: '',
+    password:''
   }
 
-  constructor(private afDatabase: AngularFireDatabase, private http: HttpClient) {
+  constructor(private afDatabase: AngularFireDatabase, private http: HttpClient, private afAuth: AngularFireAuth) {
     this.retrieveEmployees();
     // this.retrieveSensorData();
     // this.retrieveSensorData2();
@@ -49,31 +45,32 @@ export class EmployeeCrudComponent implements OnInit {
 
 
   addEmployee() {
-    const userData = {
-      location: this.selectedUser.location,
-      coordinates: this.selectedUser.coordinates,
-      email: this.selectedUser.email,
-      fullName: this.selectedUser.fullName,
-      gender: this.selectedUser.gender,
-      mobile: this.selectedUser.mobile
-    };
+    this.register();
+    // const userData = {
+    //   location: this.selectedUser.location,
+    //   coordinates: this.selectedUser.coordinates,
+    //   email: this.selectedUser.email,
+    //   fullName: this.selectedUser.fullName,
+    //   gender: this.selectedUser.gender,
+    //   mobile: this.selectedUser.mobile
+    // };
   
-    // Generate a new Firebase ID for the user
-    const firebaseId = this.afDatabase.createPushId();
+    // // Generate a new Firebase ID for the user
+    // const firebaseId = this.afDatabase.createPushId();
   
-    // Save the new user data to the "Registered Users" database
-    this.afDatabase.object(`/Employees/${firebaseId}`).set(userData)
-      .then(() => {
-        console.log('User added successfully to Employees.');
-        this.closeAddModal();
-        this.openModalResult(true);
-      })
-      .catch((error) => {
-        console.error('Error adding user:', error);
-        // Handle error
-        this.closeAddModal();
-        this.openModalResult(false);
-      });
+    // // Save the new user data to the "Registered Users" database
+    // this.afDatabase.object(`/Employees/${firebaseId}`).set(userData)
+    //   .then(() => {
+    //     console.log('User added successfully to Employees.');
+    //     this.closeAddModal();
+    //     this.openModalResult(true);
+    //   })
+    //   .catch((error) => {
+    //     console.error('Error adding user:', error);
+    //     // Handle error
+    //     this.closeAddModal();
+    //     this.openModalResult(false);
+    //   });
   }
   openAddModal() {
     this.myModals.toArray()[2].nativeElement.classList.add('show');
@@ -268,26 +265,57 @@ export class EmployeeCrudComponent implements OnInit {
     document.body.classList.remove('modal-open');
   }
 
-  signUp(email: string, password: string) {
-    firebase.auth().createUserWithEmailAndPassword(email, password)
+  
+  register(): void {
+    this.afAuth
+      .createUserWithEmailAndPassword(this.selectedUser.email, this.selectedUser.password)
       .then((userCredential) => {
-        // User account created successfully
+        // Registration successful
         const user = userCredential.user;
+        console.log('User registered:', user);
         
         // Send email verification
-        user.sendEmailVerification()
+        user!.sendEmailVerification()
           .then(() => {
-            // Email verification sent
-            console.log('Email verification sent');
+            console.log('Email verification sent.');
           })
           .catch((error) => {
-            // Error sending email verification
             console.error('Error sending email verification:', error);
+            // Handle the error accordingly
+          });
+  
+        // Prepare the user data
+        const userData = {
+          location: this.selectedUser.location,
+          coordinates: this.selectedUser.coordinates,
+          email: this.selectedUser.email,
+          fullName: this.selectedUser.fullName,
+          gender: this.selectedUser.gender,
+          mobile: this.selectedUser.mobile,
+          password: this.selectedUser.password // Include the password in the user data
+        };
+  
+        // Generate a new Firebase ID for the user
+        const firebaseId = this.afDatabase.createPushId();
+  
+        // Save the new user data to the "Employees" database
+        this.afDatabase.object(`/Employees/${firebaseId}`).set(userData)
+          .then(() => {
+            console.log('User added successfully to Employees.');
+            this.closeAddModal();
+            this.openModalResult(true);
+          })
+          .catch((error) => {
+            console.error('Error adding user:', error);
+            // Handle error
+            this.closeAddModal();
+            this.openModalResult(false);
           });
       })
       .catch((error) => {
-        // Error creating user account
-        console.error('Error creating user account:', error);
+        // Registration failed
+        console.error('Error registering user:', error);
+        // Handle the error accordingly
       });
   }
   

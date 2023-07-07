@@ -163,6 +163,10 @@
             <label for="mobile">Mobile</label>
             <input type="text" class="form-control" id="mobile" [(ngModel)]="selectedUser.mobile" name="mobile" required>
           </div>
+          <div class="form-group">
+            <label for="mobile">Password</label>
+            <input type="text" class="form-control" id="password" [(ngModel)]="selectedUser.password" name="password" required>
+          </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" (click)="addEmployee()" data-dismiss="modal">Add Employee</button>
             <button type="button" class="btn btn-secondary" (click)="closeAddModal()" data-dismiss="modal">Close</button>
