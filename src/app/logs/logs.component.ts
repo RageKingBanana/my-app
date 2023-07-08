@@ -7,6 +7,9 @@ import {SensorDataService} from "../services/SensorDataService";
 import "jspdf-autotable";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { pagination_config } from 'src/environments/environment';
+
+
 
 // import autoTable from 'jspdf-autotable'
 @Component({
@@ -17,6 +20,10 @@ import autoTable from "jspdf-autotable";
 export class LogsComponent
 {
 	@ViewChildren("confirmModal, resultModal,exportModal") myModals!: QueryList<ElementRef>;
+	pagination_config = pagination_config;
+	loading2 = false;
+	totalItems!:number;
+	lastPageNumber!: number;
 	employees!: any[];
 	registeredUsers!: any[];
 	registeredUsers2!: any[];
@@ -54,6 +61,10 @@ export class LogsComponent
 
 	async ngOnInit(): Promise<void>
 	{
+		this.pagination_config = {  
+			page: 1,
+			pageSize: 25
+		  };
 		await this.retrievelogs();
 		this.retrievelogs2();
 	}
@@ -162,60 +173,56 @@ export class LogsComponent
 		);
 	}
 
-	async openModalConfirm(data: FilteredLogsData, key: string)
-	{
-		await this.retrievelogs2(); // Wait for the keys to be retrieved
+	async openModalConfirm(data: FilteredLogsData, key: string) {
+		await this.retrievelogs2();
 		console.log(data, "selected data");
 		console.log(key, "selected key");
-		if (data)
-		{
-
-			this.selectedLog = data;
-			console.log(this.selectedLog.key, "ISKEY");
-
-			const place = data.sensorDataValues.loc;
-
-// Update the isread property to true for the selected log
-			this.afDatabase.object(`/Logs/${key}`).update({isread: true})
-				.then(() => console.log("isread updated successfully in Firebase"))
-				.catch((error) => console.log("Error updating isread in Firebase:", error));
-			//   console.log(data.sensorDataValues.loc,'SELECTED');
-			this.getLocationString(place).subscribe(
-				(formattedAddress) =>
-				{
-					this.selectedLog.sensorDataValues.loc = formattedAddress;
-				},
-			);
-
-			console.log(data.sensorDataValues.flame, "OPENMODAL");
-			this.selectedUsers = data.userData;
-			console.log(this.selectedLog.isread, "ISREAD");
-			// this.selectedLog.isread = 'true';
-			// this.afDatabase.object(`/Logs/${data.key}`).update({ isread: 'true' })
-			// .then(() => console.log('isread updated successfully in Firebase'))
-			// .catch((error) => console.log('Error updating isread in Firebase:', error));
-
-			this.myModals.toArray()[0].nativeElement.classList.add("show");
-			this.myModals.toArray()[0].nativeElement.style.display = "block";
-			document.body.classList.add("modal-open");
+		if (data) {
+		  this.selectedLog = data;
+		  console.log(this.selectedLog.key, "ISKEY");
+	  
+		  const place = data.sensorDataValues.loc;
+	  
+		  // Update the isread property to true for the selected log
+		  this.afDatabase.object(`/Logs/${key}`).update({ isread: true })
+			.then(() => console.log("isread updated successfully in Firebase"))
+			.catch((error) => console.log("Error updating isread in Firebase:", error));
+	  
+		  this.getLocationString(place).subscribe(
+			(formattedAddress) => {
+			  this.selectedLog.sensorDataValues.loc = formattedAddress;
+			},
+		  );
+	  
+		  console.log(data.sensorDataValues.flame, "OPENMODAL");
+		  this.selectedUsers = data.userData;
+		  console.log(this.selectedLog.isread, "ISREAD");
+	  
+		  this.myModals.toArray()[0].nativeElement.classList.add("show");
+		  this.myModals.toArray()[0].nativeElement.style.display = "block";
+		  document.body.classList.add("modal-open");
+		} else {
+		  console.log("User not found", data);
 		}
-		else
-		{
-			console.log("User not found", data);
-		}
-	}
-
-
-	retrievelogs2()
-	{
-		this.afDatabase.list("/Logs").snapshotChanges().subscribe(sensorDataSnapshot =>
-		{
-			this.sensorDataKeys = sensorDataSnapshot
-				.map(dataSnapshot => dataSnapshot.key)
-				.filter(key => !!key); // Filter out null values
-			// console.log(this.sensorDataKeys, 'sensordata keys');
+	  }
+	  
+	retrievelogs2() {
+		this.afDatabase.list("/Logs").snapshotChanges().subscribe(sensorDataSnapshot => {
+		  this.sensorDataKeys = sensorDataSnapshot
+			.map(dataSnapshot => dataSnapshot.key)
+			.filter(key => !!key); // Filter out null values
+	  
+		  // Calculate the total number of items and the last page number
+		  this.totalItems = this.sensorDataKeys.length;
+		  this.lastPageNumber = Math.ceil(this.totalItems / this.pagination_config.pageSize);
+	  
+		  console.log(this.totalItems, this.pagination_config.pageSize);
+		  console.log(`LAST: ${this.lastPageNumber}`);
+		  console.log(`sensorDataKeys`, this.sensorDataKeys);
 		});
-	}
+	  }
+	  
+	  
 
 
 	closeModalConfirm()

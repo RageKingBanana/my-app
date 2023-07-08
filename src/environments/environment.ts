@@ -10,5 +10,10 @@ export const environment = {
         appId: "1:1009190358592:web:e38d184d44c724b7ded9a5",
         measurementId: "G-4QV5NT9S8V"
     },
+
+  };
+  export const pagination_config = {
+    page: 1,
+    pageSize: 10
   };
   

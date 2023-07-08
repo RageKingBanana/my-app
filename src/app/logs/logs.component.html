@@ -30,8 +30,9 @@
         <th>Status</th>
       </tr>
       <ng-container *ngIf="sensorData$ | async as sensorData">
-        <tr *ngFor="let data of sensorData; let i = index" [style.background-color]="data.isread === 'false' ? 'darkred' : ''"
-          [style.color]="data.isread === 'false' ? 'black' : 'white'">
+        <tr *ngFor="let data of sensorData.slice((pagination_config.page - 1) * pagination_config.pageSize, pagination_config.page * pagination_config.pageSize); let i = index"
+        [style.background-color]="data.isread === 'false' ? 'darkred' : ''"
+        [style.color]="data.isread === 'false' ? 'black' : 'white'">
           <!-- <td>{{ sensorDataKeys[i] }}</td> -->
           <td>{{ data.timestamp}}</td>
           <td>{{ data.sensorDataValues.flameStatus}}</td>
@@ -48,6 +49,9 @@
         </tr>
       </ng-container>
     </table>
+    <ngb-pagination *ngIf="!loading2" class="d-flex justify-content-end" style="margin-right: 15px;" 
+    [collectionSize]="lastPageNumber*10" [(page)]="pagination_config.page" 
+    [maxSize]="pagination_config.pageSize" [rotate]="true" [ellipses]="false" [boundaryLinks]="true"></ngb-pagination>
     
 
 
