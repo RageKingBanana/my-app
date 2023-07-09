@@ -45,7 +45,7 @@
         <tr *ngFor="let data of sensorData.slice((pagination_config.page - 1) * pagination_config.pageSize, pagination_config.page * pagination_config.pageSize); let index = index"
         [style.background-color]="data.isread === 'false' ? 'darkred' : ''"
         [style.color]="data.isread === 'false' ? 'black' : 'white'">
-        <td hidden>{{ sensorDataKeys[(pagination_config.page - 1) * pagination_config.pageSize + index] }}</td>
+        <td >{{ sensorDataKeys[(pagination_config.page - 1) * pagination_config.pageSize + index] }}</td>
         <td>{{ data.timestamp?.toString() }}</td>
         <td>{{ data.sensorDataValues.flameStatus }}</td>
         <td>{{ data.sensorDataValues.mq135Status }}</td>
