@@ -9,7 +9,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { pagination_config } from 'src/environments/environment';
 import { NgbDateStruct, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
-
+import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 
 
 // import autoTable from 'jspdf-autotable'
@@ -26,6 +26,7 @@ export class LogsComponent
   
 	startDate: NgbDateStruct = { year: 2023, month: 6, day: 1 };
 	endDate: NgbDateStruct = { year: 2023, month: 6, day: 30 };
+	filteredData: any[] = []; 
 	showStartDatePicker = false;
 	showEndDatePicker = false;
 	pagination_config = pagination_config;
@@ -61,7 +62,10 @@ export class LogsComponent
 	};
 	highlighted = true;
 
-	constructor(private afDatabase: AngularFireDatabase, private http: HttpClient, private sensorDataService: SensorDataService)
+	constructor(private afDatabase: AngularFireDatabase, 
+		private http: HttpClient, 
+		private sensorDataService: SensorDataService,
+		private ngbDateParserFormatter: NgbDateParserFormatter)
 	{
 
 	}
@@ -150,20 +154,54 @@ export class LogsComponent
 			});
 	}
 
-	onDateSelect(): void {
-		if (this.startDate && this.endDate) {
-		  const formattedStartDate = this.formatDate(this.startDate);
-		  const formattedEndDate = this.formatDate(this.endDate);
-		  console.log('Start Date:', formattedStartDate);
-		  console.log('End Date:', formattedEndDate);
-		}
-	  }
-	
-	  formatDate(date: NgbDateStruct): string {
-		const jsDate = new Date(date.year, date.month - 1, date.day);
-		return jsDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
-	  }
 
+// Function to convert NgbDateStruct to Date
+ngbDateStructToDate(date: NgbDateStruct): Date | undefined {
+	if (date) {
+	  return new Date(date.year, date.month - 1, date.day);
+	}
+	return undefined;
+  }
+  
+  
+// Function to filter logs based on the date range
+filterLogsByDateRange() {
+	// Convert the start and end dates to JavaScript Date objects
+	const start = this.ngbDateStructToDate(this.startDate);
+	const end = this.ngbDateStructToDate(this.endDate);
+  
+	// Filter the logs based on the date range
+	this.sensorData$ = this.sensorData$.pipe(
+	  map(sensorData => sensorData.filter(data => {
+		if (data.timestamp && start && end) {
+		  const logDate = new Date(data.timestamp);
+		  logDate.setHours(0, 0, 0, 0); // Reset the time to 00:00:00
+		
+		  return logDate >= start && logDate <= end;
+		}
+		return false;
+	  }))
+	);
+  }
+  
+  
+  
+  
+  
+  // Function to handle changes in the start date input
+  onStartDateChange(date: NgbDateStruct) {
+	this.startDate = date;
+  }
+  
+  // Function to handle changes in the end date input
+  onEndDateChange(date: NgbDateStruct) {
+	this.endDate = date;
+  }
+	  
+	
+	  getDateString(date: NgbDateStruct): string {
+		return `${date.year}-${date.month.toString().padStart(2, '0')}-${date.day.toString().padStart(2, '0')}`;
+	  }
 
 	getLocationString(coordinates: string): Observable<string>
 	{
