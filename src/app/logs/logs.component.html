@@ -30,23 +30,23 @@
         <th>Status</th>
       </tr>
       <ng-container *ngIf="sensorData$ | async as sensorData">
-        <tr *ngFor="let data of sensorData.slice((pagination_config.page - 1) * pagination_config.pageSize, pagination_config.page * pagination_config.pageSize); let i = index"
+        <tr *ngFor="let data of sensorData.slice((pagination_config.page - 1) * pagination_config.pageSize, pagination_config.page * pagination_config.pageSize); let index = index"
         [style.background-color]="data.isread === 'false' ? 'darkred' : ''"
         [style.color]="data.isread === 'false' ? 'black' : 'white'">
-          <!-- <td>{{ sensorDataKeys[i] }}</td> -->
-          <td>{{ data.timestamp}}</td>
-          <td>{{ data.sensorDataValues.flameStatus}}</td>
-          <td>{{ data.sensorDataValues.mq135Status }}</td>
-          <td>{{ data.sensorDataValues.mq2Status}}</td>
-          <td>{{ data.sensorDataValues.status }}</td>
-          <td>{{ data.sensorDataValues.statusNotif }}</td>
-          <td>
-            <button type="button" class="btn" [ngClass]="data.isread === 'false' ? 'btn-dark' : 'btn-light'"
-              (click)="openModalConfirm(data, sensorDataKeys[i])">
-              <span class="bi bi-pencil" [style.color]="data.isread === 'false' ? 'red' : ''"></span>
-            </button>
-          </td>
-        </tr>
+        <td>{{ sensorDataKeys[(pagination_config.page - 1) * pagination_config.pageSize + index] }}</td>
+        <td>{{ data.timestamp }}</td>
+        <td>{{ data.sensorDataValues.flameStatus }}</td>
+        <td>{{ data.sensorDataValues.mq135Status }}</td>
+        <td>{{ data.sensorDataValues.mq2Status }}</td>
+        <td>{{ data.sensorDataValues.status }}</td>
+        <td>{{ data.sensorDataValues.statusNotif }}</td>
+        <td>
+          <button type="button" class="btn" [ngClass]="data.isread === 'false' ? 'btn-dark' : 'btn-light'"
+            (click)="openModalConfirm(data, sensorDataKeys[(pagination_config.page - 1) * pagination_config.pageSize + index])">
+            <span class="bi bi-pencil" [style.color]="data.isread === 'false' ? 'red' : ''"></span>
+          </button>
+        </td>
+      </tr>
       </ng-container>
     </table>
     <ngb-pagination *ngIf="!loading2" class="d-flex justify-content-end" style="margin-right: 15px;" 

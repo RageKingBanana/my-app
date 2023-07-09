@@ -1,4 +1,4 @@
-import {Component, ElementRef, QueryList, ViewChildren} from "@angular/core";
+import {Component, ElementRef, QueryList, ViewChild, ViewChildren} from "@angular/core";
 import {AngularFireDatabase} from "@angular/fire/compat/database";
 import {HttpClient} from "@angular/common/http";
 import {combineLatest, interval, Observable, of, tap} from "rxjs";
@@ -8,6 +8,7 @@ import "jspdf-autotable";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { pagination_config } from 'src/environments/environment';
+import { NgbDateStruct, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 
 
 
@@ -20,6 +21,13 @@ import { pagination_config } from 'src/environments/environment';
 export class LogsComponent
 {
 	@ViewChildren("confirmModal, resultModal,exportModal") myModals!: QueryList<ElementRef>;
+	@ViewChild('startDatePicker', { static: false }) startDatePicker: any;
+	@ViewChild('endDatePicker', { static: false }) endDatePicker: any;
+  
+	startDate: NgbDateStruct = { year: 2023, month: 6, day: 1 };
+	endDate: NgbDateStruct = { year: 2023, month: 6, day: 30 };
+	showStartDatePicker = false;
+	showEndDatePicker = false;
 	pagination_config = pagination_config;
 	loading2 = false;
 	totalItems!:number;
@@ -141,6 +149,20 @@ export class LogsComponent
 				this.sensorDataService.setSensorData(sensorDataList);
 			});
 	}
+
+	onDateSelect(): void {
+		if (this.startDate && this.endDate) {
+		  const formattedStartDate = this.formatDate(this.startDate);
+		  const formattedEndDate = this.formatDate(this.endDate);
+		  console.log('Start Date:', formattedStartDate);
+		  console.log('End Date:', formattedEndDate);
+		}
+	  }
+	
+	  formatDate(date: NgbDateStruct): string {
+		const jsDate = new Date(date.year, date.month - 1, date.day);
+		return jsDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+	  }
 
 
 	getLocationString(coordinates: string): Observable<string>
