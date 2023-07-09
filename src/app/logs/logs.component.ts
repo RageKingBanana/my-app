@@ -164,24 +164,34 @@ ngbDateStructToDate(date: NgbDateStruct): Date | undefined {
   }
   
   
-// Function to filter logs based on the date range
-filterLogsByDateRange() {
+  filterLogsByDateRange() {
 	// Convert the start and end dates to JavaScript Date objects
 	const start = this.ngbDateStructToDate(this.startDate);
 	const end = this.ngbDateStructToDate(this.endDate);
   
 	// Filter the logs based on the date range
 	this.sensorData$ = this.sensorData$.pipe(
-	  map(sensorData => sensorData.filter(data => {
-		if (data.timestamp && start && end) {
-		  const logDate = new Date(data.timestamp);
-		  logDate.setHours(0, 0, 0, 0); // Reset the time to 00:00:00
-		
-		  return logDate >= start && logDate <= end;
-		}
-		return false;
-	  }))
+	  map(sensorData =>
+		sensorData.filter(data => {
+		  if (data.timestamp && start && end) {
+			// Extract the date part from the timestamp
+			const logDate = new Date(data.timestamp);
+			logDate.setHours(0, 0, 0, 0); // Reset the time to 00:00:00
+  
+			// Compare the date part with the start and end dates
+			return logDate >= start && logDate <= end;
+		  }
+		  return false;
+		})
+	  )
 	);
+  }
+  
+  
+  // Function to format a date object to the format 'Month Day, Year'
+  formatDate(date: Date): string {
+	const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+	return date.toLocaleDateString('en-US', options);
   }
   
   
