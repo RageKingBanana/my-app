@@ -10,6 +10,7 @@ import autoTable from "jspdf-autotable";
 import { pagination_config } from 'src/environments/environment';
 import { NgbDateStruct, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
+import { end } from "@popperjs/core";
 
 
 // import autoTable from 'jspdf-autotable'
@@ -23,7 +24,8 @@ export class LogsComponent
 	@ViewChildren("confirmModal, resultModal,exportModal") myModals!: QueryList<ElementRef>;
 	@ViewChild('startDatePicker', { static: false }) startDatePicker: any;
 	@ViewChild('endDatePicker', { static: false }) endDatePicker: any;
-  
+    startTimestamp = "";
+  endTimestamp = "";
 	startDate: NgbDateStruct = { year: 2023, month: 6, day: 1 };
 	endDate: NgbDateStruct = { year: 2023, month: 6, day: 30 };
 	filteredData: any[] = []; 
@@ -81,79 +83,67 @@ export class LogsComponent
 		this.retrievelogs2();
 	}
 
-	async retrievelogs()
-	{
+	async retrievelogs() {
+		
 		this.sensorData$ = this.afDatabase.list("/Logs").snapshotChanges().pipe(
-			map(sensorDataSnapshot =>
-				sensorDataSnapshot.map(dataSnapshot =>
-				{
-					const key = dataSnapshot.key;
-					const value = dataSnapshot.payload.val() as Record<string, any>;
-					return {key, ...value};
-				})),
-			tap(rawData => console.log({rawData})),
-			map((sensorData): FilteredLogsData[] =>
-				sensorData.map(data =>
-				{
-					// @ts-ignore
-					const userData = Object.keys(data.userData).map(key =>
-					{
-						// @ts-ignore
-						const value = data.userData[key];
-						return {
-							key,
-							...value,
-						};
-					});
-
-					return ({
-						// @ts-ignore
-						key: data.key ?? undefined,
-						// @ts-ignore
-						sensorDataValues: data.sensorDataValues,
-						// @ts-ignore
-						userData,
-						// @ts-ignore
-						timestamp: data.timestamp,
-						// @ts-ignore
-						isread: data.isread,
-					});
-				})),
-			map(sensorDataList =>
-			{
-				return sensorDataList.map(({sensorDataValues, userData, timestamp, isread}) =>
-				{
-
-					/// Editing the cell values example
-					sensorDataValues.flameStatus = sensorDataValues.flameStatus === "true" ? "FIRE" : "NO FIRE";
-					sensorDataValues.mq2Status = sensorDataValues.mq2Status === "true" ? "GAS LEAK" : "NO GAS LEAK";
-					sensorDataValues.mq135Status = sensorDataValues.mq135Status === "true" ? "SMOKE DETECTED" : "SMOKE";
-
-					return {
-						sensorDataValues,
-						userData,
-						timestamp,
-						isread,
-					};
-				});
-			}),
-			tap(finalData =>
-			{
-				console.log({finalData});
-			}),
-		);
-
-		combineLatest([
-			this.sensorData$,
-			interval(1000),
-		])
-			.subscribe(([sensorDataList]) =>
-			{
-				console.log("here");
-				this.sensorDataService.setSensorData(sensorDataList);
+		  map(sensorDataSnapshot =>
+			sensorDataSnapshot.map(dataSnapshot => {
+			  const key = dataSnapshot.key;
+			  const value = dataSnapshot.payload.val() as Record<string, any>;
+			  return { key, ...value };
+			})),
+		  map((sensorData): FilteredLogsData[] =>
+			sensorData.map(data => {
+			  // @ts-ignore
+			  const userData = Object.keys(data.userData).map(key => {
+				// @ts-ignore
+				const value = data.userData[key];
+				return {
+				  key,
+				  ...value,
+				};
+			  });
+	  
+			  return ({
+				// @ts-ignore
+				key: data.key ?? undefined,
+				// @ts-ignore
+				sensorDataValues: data.sensorDataValues,
+				// @ts-ignore
+				userData,
+				// @ts-ignore
+				timestamp: data.timestamp,
+				// @ts-ignore
+				isread: data.isread,
+			  });
+			})),
+		  tap(rawData => console.log({ rawData })),
+		  map(sensorDataList => {
+			return sensorDataList.filter(({ timestamp }) => {
+				// const startTimestamp = this.startTimestamp;
+				// const endTimestamp = this.endTimestamp;
+			  // Compare the timestamp value within the range
+			  console.log(this.startTimestamp,this.endTimestamp,'BEFORE FILTERING');
+			  //@ts-ignore
+			  return timestamp >= this.startTimestamp && timestamp <= this.endTimestamp;
 			});
-	}
-
+		  }),
+		  tap(finalData => {
+			console.log({ finalData });
+		  }),
+		);
+	  
+		combineLatest([
+		  this.sensorData$,
+		  interval(1000),
+		]).subscribe(([sensorDataList]) => {
+		  console.log("here");
+		  this.sensorDataService.setSensorData(sensorDataList);
+		});
+	  }
+	  
+	  
+	  
 
 // Function to convert NgbDateStruct to Date
 ngbDateStructToDate(date: NgbDateStruct): Date | undefined {
@@ -163,51 +153,36 @@ ngbDateStructToDate(date: NgbDateStruct): Date | undefined {
 	return undefined;
   }
   
-  
   filterLogsByDateRange() {
-	// Convert the start and end dates to JavaScript Date objects
-	const start = this.ngbDateStructToDate(this.startDate);
-	const end = this.ngbDateStructToDate(this.endDate);
-  
-	// Filter the logs based on the date range
-	this.sensorData$ = this.sensorData$.pipe(
-	  map(sensorData =>
-		sensorData.filter(data => {
-		  if (data.timestamp && start && end) {
-			// Extract the date part from the timestamp
-			const logDate = new Date(data.timestamp);
-			logDate.setHours(0, 0, 0, 0); // Reset the time to 00:00:00
-  
-			// Compare the date part with the start and end dates
-			return logDate >= start && logDate <= end;
-		  }
-		  return false;
-		})
-	  )
-	);
+
   }
-  
-  
-  // Function to format a date object to the format 'Month Day, Year'
-  formatDate(date: Date): string {
-	const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
-	return date.toLocaleDateString('en-US', options);
-  }
-  
-  
-  
-  
-  
-  // Function to handle changes in the start date input
   onStartDateChange(date: NgbDateStruct) {
 	this.startDate = date;
+	this.startTimestamp = this.formatTimestamp(date, "12:00:00 AM");
+	console.log(this.startTimestamp, 'STARTTIMESTAMP');
+	
+	// Call retrievelogs() to update the data based on the new date range
+	this.retrievelogs();
   }
   
-  // Function to handle changes in the end date input
   onEndDateChange(date: NgbDateStruct) {
 	this.endDate = date;
+	this.endTimestamp = this.formatTimestamp(date, "11:59:59 PM");
+	console.log(this.endTimestamp, 'ENDTIMESTAMP');
+	// Call retrievelogs() to update the data based on the new date range
+	this.retrievelogs();
   }
-	  
+  
+  formatTimestamp(date: NgbDateStruct, time: string): string {
+	const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+	const formattedDate = date ? new Date(date.year, date.month - 1, date.day).toLocaleDateString('en-US', options) : '';
+	return `${formattedDate} at ${time}`;
+  }
+  
+
+
+
+
 	
 	  getDateString(date: NgbDateStruct): string {
 		return `${date.year}-${date.month.toString().padStart(2, '0')}-${date.day.toString().padStart(2, '0')}`;

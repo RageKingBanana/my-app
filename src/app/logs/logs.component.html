@@ -16,16 +16,18 @@
 
 
        <label for="start-date">Start Date:</label>
-       <input type="text" id="start-date" [ngModel]="startDate" (ngModelChange)="onStartDateChange($event)" 
-              ngbDatepicker #startDatePicker="ngbDatepicker">
+       <input type="text" id="start-date" [ngModel]="startTimestamp" (ngModelChange)="onStartDateChange($event)" 
+         ngbDatepicker #startDatePicker="ngbDatepicker">
        <button (click)="startDatePicker.toggle()">Select</button>
        
        <label for="end-date">End Date:</label>
-       <input type="text" id="end-date" [ngModel]="endDate" (ngModelChange)="onEndDateChange($event)" 
-              ngbDatepicker #endDatePicker="ngbDatepicker">
+       <input type="text" id="end-date" [ngModel]="endTimestamp" (ngModelChange)="onEndDateChange($event)" 
+         ngbDatepicker #endDatePicker="ngbDatepicker">
        <button (click)="endDatePicker.toggle()">Select</button>
        
        <button (click)="filterLogsByDateRange()">Filter</button>
+       
+       
        
     <h2>Logs</h2>
     <table class="table p-3 table-hover white-text" [style.background-color]="highlighted ? 'rgba(0, 0, 0, 0.9)' : 'rgba(255, 255, 255, 0.8)'">
