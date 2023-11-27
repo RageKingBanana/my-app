@@ -25,6 +25,10 @@ export class LoginComponent {
     private router: Router
   ) {}
 
+  goToHome() {
+    this.router.navigate(['/home']);
+  }
+  
   async login() {
     const { Username, Password } = this.loginModel;
 

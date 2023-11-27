@@ -7,7 +7,18 @@ import { CrudUserComponent } from './crud-user/crud-user.component';
 import { AuthGuard } from './guards/auth.guard';
 import { EmployeeCrudComponent } from './employee-crud/employee-crud.component';
 import { LogsComponent } from './logs/logs.component';
+import { HomeComponent } from './home/home.component';
+
 const routes: Routes = [
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'home',
+  },
+  {
+    path: 'home',
+    component: HomeComponent,
+  },
   {
     path: 'login',
     component: LoginComponent,
@@ -15,28 +26,25 @@ const routes: Routes = [
   {
     path: 'crud-user',
     component: CrudUserComponent,
-    canActivate: [AuthGuard], // Apply the AuthGuard to this route
+    canActivate: [AuthGuard],
   },
   {
     path: 'app',
     component: AppComponent,
   },
-
-  {
-    path: '',
-    redirectTo: 'login',
-    pathMatch: 'full',
-  },
-
   {
     path: 'employee-crud',
     component: EmployeeCrudComponent,
-    canActivate: [AuthGuard], // Apply the AuthGuard to this route
+    canActivate: [AuthGuard],
   },
   {
     path: 'logs',
     component: LogsComponent,
-    canActivate: [AuthGuard], // Apply the AuthGuard to this route
+    canActivate: [AuthGuard],
+  },
+  {
+    path: '**',
+    redirectTo: 'home',
   },
 ];
 

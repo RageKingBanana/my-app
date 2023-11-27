@@ -20,13 +20,15 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { EmployeeCrudComponent } from './employee-crud/employee-crud.component';
 import { LogsComponent } from './logs/logs.component';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+import { HomeComponent } from './home/home.component';
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     CrudUserComponent,
     EmployeeCrudComponent,
-    LogsComponent
+    LogsComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,

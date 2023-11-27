@@ -18,7 +18,7 @@ export class AppComponent implements OnInit {
     private sensorDataService: SensorDataService
   ) {}
 
-  title = 'PYRONNOIA';
+  title = 'POTATO LEAGUE GAMERS';
 
   ngOnInit(): void {
     this.unreadNotificationCount$ = this.sensorDataService.getUnreadSensorDataCount();
