@@ -5,7 +5,6 @@
     gender:string,
     hashid:string,
     mobile:string,
-    location:string,
     userId:string,
     employeeId:string,
     password:string

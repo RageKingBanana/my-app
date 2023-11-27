@@ -14,7 +14,7 @@
   <div class="crud-user-reponses p-3"
        style="height: 900px; overflow-y: scroll; background-image: url('assets/images/firetruck.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat;">
 
-
+<!-- 
        <label for="start-date">Start Date:</label>
        <input type="text" id="start-date" [ngModel]="startDate" (ngModelChange)="onStartDateChange($event)" 
               ngbDatepicker #startDatePicker="ngbDatepicker">
@@ -25,7 +25,7 @@
               ngbDatepicker #endDatePicker="ngbDatepicker">
        <button (click)="endDatePicker.toggle()">Select</button>
        
-       <button (click)="filterLogsByDateRange()">Filter</button>
+       <button (click)="filterLogsByDateRange()">Filter</button> -->
        
     <h2>Logs</h2>
     <table class="table p-3 table-hover white-text" [style.background-color]="highlighted ? 'rgba(0, 0, 0, 0.9)' : 'rgba(255, 255, 255, 0.8)'">
@@ -36,20 +36,20 @@
         <th>mq135 Status</th>
         <th>mq2 Status</th>
         <th>Status</th>
-        <th>Status Notif</th>
+        <th hidden>Status Notif</th>
         <th>Status</th>
       </tr>
       <ng-container *ngIf="sensorData$ | async as sensorData">
-        <tr *ngFor="let data of sensorData.slice((pagination_config.page - 1) * pagination_config.pageSize, pagination_config.page * pagination_config.pageSize); let index = index"
+        <tr *ngFor="let data of sensorData; let index = index"
         [style.background-color]="data.isread === 'false' ? 'darkred' : ''"
         [style.color]="data.isread === 'false' ? 'black' : 'white'">
-        <td>{{ sensorDataKeys[(pagination_config.page - 1) * pagination_config.pageSize + index] }}</td>
+        <td hidden>{{ sensorDataKeys[(pagination_config.page - 1) * pagination_config.pageSize + index] }}</td>
         <td>{{ data.timestamp }}</td>
         <td>{{ data.sensorDataValues.flameStatus }}</td>
         <td>{{ data.sensorDataValues.mq135Status }}</td>
         <td>{{ data.sensorDataValues.mq2Status }}</td>
         <td>{{ data.sensorDataValues.status }}</td>
-        <td>{{ data.sensorDataValues.statusNotif }}</td>
+        <td hidden>{{ data.sensorDataValues.statusNotif }}</td>
         <td>
           <button type="button" class="btn" [ngClass]="data.isread === 'false' ? 'btn-dark' : 'btn-light'"
             (click)="openModalConfirm(data, sensorDataKeys[(pagination_config.page - 1) * pagination_config.pageSize + index])">

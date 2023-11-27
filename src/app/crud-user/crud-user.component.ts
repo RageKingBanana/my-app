@@ -19,7 +19,6 @@ export class CrudUserComponent implements OnInit{
   sensorData2!: any[];
   selectedUID!:string;
   selectedUser: selectedUserMode = {
-    location:'',
     Recordings:'',
     coordinates:'',
     email:'',
@@ -48,7 +47,7 @@ export class CrudUserComponent implements OnInit{
       });
       console.log(registeredUsers2,'REG2ITO');
       this.registeredUsers2 = registeredUsers2;
-      this.getLocations(this.registeredUsers2);
+      // this.getLocations(this.registeredUsers2);
     });
   }
 
@@ -61,31 +60,31 @@ export class CrudUserComponent implements OnInit{
         return { userId, ...userData };
       });
       this.registeredUsers = registeredUsers;
-      this.getLocations(this.registeredUsers);
+      // this.getLocations(this.registeredUsers);
     });
   }
   
 
-  getLocations(users: any[]): void {
-    users.forEach(user => {
-      const [latitude, longitude] = user.coordinates.split(',');
-      console.log (user.coordinates,'coords');
-      const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyAKEou6JOvFfcgPt_G-W3cGXnGn-g8W82w`;
+  // getLocations(users: any[]): void {
+  //   users.forEach(user => {
+  //     const [latitude, longitude] = user.coordinates.split(',');
+  //     console.log (user.coordinates,'coords');
+  //     const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyAKEou6JOvFfcgPt_G-W3cGXnGn-g8W82w`;
 
-      this.http.get<any>(apiUrl).subscribe(
-        (data) => {
-          if (data.status === 'OK' && data.results.length > 0) {
-            // Assuming the first result is the most accurate one
-            const locationString = data.results[0].formatted_address;
-            user.location = locationString;
-          }
-        },
-        (error) => {
-          //console.log('Error fetching location data:', error);
-        }
-      );
-    });
-  }
+  //     this.http.get<any>(apiUrl).subscribe(
+  //       (data) => {
+  //         if (data.status === 'OK' && data.results.length > 0) {
+  //           // Assuming the first result is the most accurate one
+  //           const locationString = data.results[0].formatted_address;
+  //           user.location = locationString;
+  //         }
+  //       },
+  //       (error) => {
+  //         //console.log('Error fetching location data:', error);
+  //       }
+  //     );
+  //   });
+  // }
 
   openModalConfirm(userid: string) {
     const selectedUser = this.registeredUsers.find(user => user.userId === userid);
@@ -144,7 +143,6 @@ export class CrudUserComponent implements OnInit{
         const firebaseId = user.userId;
         if (firebaseId) {
           const userData = {
-            location: this.selectedUser.location,
             coordinates: this.selectedUser.coordinates,
             email: this.selectedUser.email,
             fullName: this.selectedUser.fullName,
@@ -218,120 +216,6 @@ export class CrudUserComponent implements OnInit{
   }
   
   
-  
-
-  // editTicket() {
-  //   if (this.isEditMode) {
-  //     console.log(this.selectedUser.userId,'EDIY MODE');
-  //     const userId = this.selectedUser.userId;
-  //     // Find the user with the matching userId
-  //     let user = this.registeredUsers.find(u => u.userId === userId);
-  // console.log(user.userId,'bago mag get')
-  
-  //     if (user) {
-  //       // Get the Firebase ID (auto-generated) for the user
-  //       const firebaseId = user.userId;
-  
-  //       if (firebaseId) {
-  //         // Update the user data
-  //         const userData = {
-  //           location: this.selectedUser.location,
-  //           //Recordings: this.selectedUser.Recordings,
-  //           coordinates: this.selectedUser.coordinates,
-  //           email: this.selectedUser.email,
-  //           fullName: this.selectedUser.fullName,
-  //           gender: this.selectedUser.gender,
-  //           mobile: this.selectedUser.mobile
-  //         };
-  
-  //         // Save changes to the Firebase database using the Firebase ID and userId as reference
-  //         this.afDatabase.object(`/Registered Users/${firebaseId}`).update(userData)
-  //           .then(() => {
-  //             console.log('User updated successfully.');
-  //             this.isEditMode = false;
-  //           })
-  //           .catch((error) => {
-  //             console.error('Error updating user:', error);
-  //             // Handle error
-  //           });
-  //       } else {
-  //         console.log('Firebase ID not found for the user.');
-  //       }
-  //     } else {
-  //       console.log('User not found');
-  //     }
-  //   } else {
-  //     // Enter edit mode
-  //     console.log("edit");
-  //      console.log(this.selectedUser.userId,'EDIY MODE');
-  //     this.isEditMode = true;
-  //   }
-  // }
-
-  // editTicket2() {
-  //   if (this.isEditMode) {
-  //     console.log(this.selectedUser.userId,'EDIY MODE');
-  //     const userId = this.selectedUser.userId;
-  //     // Find the user with the matching userId
-  //     let user = this.registeredUsers2.find(u => u.userId === userId);
-  // console.log(user.userId,'bago mag get')
-  
-  //     if (user) {
-  //       // Get the Firebase ID (auto-generated) for the user
-  //       const firebaseId = user.userId;
-  
-  //       if (firebaseId) {
-  //         // Update the user data
-  //         const userData = {
-  //           location: this.selectedUser.location,
-  //           //Recordings: this.selectedUser.Recordings,
-  //           coordinates: this.selectedUser.coordinates,
-  //           email: this.selectedUser.email,
-  //           fullName: this.selectedUser.fullName,
-  //           gender: this.selectedUser.gender,
-  //           mobile: this.selectedUser.mobile
-  //         };
-  
-  //         // Save changes to the Firebase database using the Firebase ID and userId as reference
-  //         this.afDatabase.object(`/Registered Users2/${firebaseId}`).update(userData)
-  //           .then(() => {
-  //             console.log('User updated successfully.');
-  //             this.isEditMode = false;
-  //           })
-  //           .catch((error) => {
-  //             console.error('Error updating user:', error);
-  //             // Handle error
-  //           });
-  //       } else {
-  //         console.log('Firebase ID not found for the user.');
-  //       }
-  //     } else {
-  //       console.log('User not found');
-  //     }
-  //   } else {
-  //     // Enter edit mode
-  //     console.log("edit");
-  //     console.log(this.selectedUser.userId,'EDIY MODE');
-  //     this.isEditMode = true;
-  //   }
-  // }
-  
-
-
-    // deleteUsersWithIdNode() {
-  //   this.afDatabase.list('/Registered Users').snapshotChanges().subscribe((users) => {
-  //     users.forEach((user) => {
-  //       const userId = user.key; // Get the user ID
-        
-  //       const userRef = this.afDatabase.object(`/Registered Users/${userId}`);
-  //       userRef.snapshotChanges().subscribe((snapshot) => {
-  //         if (snapshot.payload.exists() && snapshot.payload.child('id').exists()) {
-  //           userRef.remove(); // Remove the user with the 'id' node
-  //         }
-  //       });
-  //     });
-  //   });
-  // }
   
 
   highlighted = true;

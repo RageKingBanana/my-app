@@ -28,7 +28,6 @@ export class EmployeeCrudComponent implements OnInit {
     gender: '',
     hashid: '',
     mobile: '',
-    location: '',
     userId: '',
     employeeId: '',
     password:''
@@ -99,30 +98,30 @@ export class EmployeeCrudComponent implements OnInit {
         return { employeeId, ...employeeData };
       });
       this.employees = employees;
-      this.getLocations(this.employees);
+      //this.getLocations(this.employees);
     });
   }
   
-  getLocations(users: any[]): void {
-    users.forEach(user => {
-      const [latitude, longitude] = user.coordinates.split(',');
-      console.log (user.coordinates,'coords');
-      const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyAKEou6JOvFfcgPt_G-W3cGXnGn-g8W82w`;
+  // getLocations(users: any[]): void {
+  //   users.forEach(user => {
+  //     const [latitude, longitude] = user.coordinates.split(',');
+  //     console.log (user.coordinates,'coords');
+  //     const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyAKEou6JOvFfcgPt_G-W3cGXnGn-g8W82w`;
 
-      this.http.get<any>(apiUrl).subscribe(
-        (data) => {
-          if (data.status === 'OK' && data.results.length > 0) {
-            // Assuming the first result is the most accurate one
-            const locationString = data.results[0].formatted_address;
-            user.location = locationString;
-          }
-        },
-        (error) => {
-          //console.log('Error fetching location data:', error);
-        }
-      );
-    });
-  }
+  //     this.http.get<any>(apiUrl).subscribe(
+  //       (data) => {
+  //         if (data.status === 'OK' && data.results.length > 0) {
+  //           // Assuming the first result is the most accurate one
+  //           const locationString = data.results[0].formatted_address;
+  //           user.location = locationString;
+  //         }
+  //       },
+  //       (error) => {
+  //         //console.log('Error fetching location data:', error);
+  //       }
+  //     );
+  //   });
+  // }
 
   openModalConfirm(employeeId: string) {
     const selectedUser = this.employees.find(user => user.employeeId === employeeId);
@@ -159,7 +158,6 @@ export class EmployeeCrudComponent implements OnInit {
         if (firebaseId) {
           // Update the employee data
           const employeeData = {
-            location: this.selectedUser.location,
             coordinates: this.selectedUser.coordinates,
             email: this.selectedUser.email,
             fullName: this.selectedUser.fullName,
@@ -286,7 +284,6 @@ export class EmployeeCrudComponent implements OnInit {
   
         // Prepare the user data
         const userData = {
-          location: this.selectedUser.location,
           coordinates: this.selectedUser.coordinates,
           email: this.selectedUser.email,
           fullName: this.selectedUser.fullName,

@@ -126,8 +126,9 @@ export class LogsComponent
 
 					/// Editing the cell values example
 					sensorDataValues.flameStatus = sensorDataValues.flameStatus === "true" ? "FIRE" : "NO FIRE";
-					sensorDataValues.mq2Status = sensorDataValues.mq2Status === "true" ? "GAS LEAK" : "NO GAS LEAK";
-					sensorDataValues.mq135Status = sensorDataValues.mq135Status === "true" ? "SMOKE DETECTED" : "SMOKE";
+					sensorDataValues.mq2Status = sensorDataValues.mq2 > 19  ? "GAS LEAK" : "NO GAS LEAK";
+					sensorDataValues.mq135Status = sensorDataValues.mq135 > 0 ? "SMOKE DETECTED" : "NO SMOKE";
+					sensorDataValues.status = sensorDataValues.status === "true" ? "NOTIFIED BFP" : "NO ACTION";
 
 					return {
 						sensorDataValues,
@@ -203,35 +204,35 @@ filterLogsByDateRange() {
 		return `${date.year}-${date.month.toString().padStart(2, '0')}-${date.day.toString().padStart(2, '0')}`;
 	  }
 
-	getLocationString(coordinates: string): Observable<string>
-	{
-		if (!coordinates)
-		{
-			return of("");
-		}
+	// getLocationString(coordinates: string): Observable<string>
+	// {
+	// 	if (!coordinates)
+	// 	{
+	// 		return of("");
+	// 	}
 
-		const [latitude, longitude] = coordinates.split(",");
-		const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyAKEou6JOvFfcgPt_G-W3cGXnGn-g8W82w`;
+	// 	const [latitude, longitude] = coordinates.split(",");
+	// 	//const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyAKEou6JOvFfcgPt_G-W3cGXnGn-g8W82w`;
 
-		return this.http.get<any>(apiUrl).pipe(
-			map((data) =>
-			{
-				if (data.status === "OK" && data.results.length > 0)
-				{
-					return data.results[0].formatted_address;
-				}
-				else
-				{
-					throw new Error("Unable to fetch location data");
-				}
-			}),
-			catchError((error) =>
-			{
-				console.log("Error fetching location data:", error);
-				return of("N/A");
-			}),
-		);
-	}
+	// 	// return this.http.get<any>(apiUrl).pipe(
+	// 	// 	map((data) =>
+	// 	// 	{
+	// 	// 		if (data.status === "OK" && data.results.length > 0)
+	// 	// 		{
+	// 	// 			return data.results[0].formatted_address;
+	// 	// 		}
+	// 	// 		else
+	// 	// 		{
+	// 	// 			throw new Error("Unable to fetch location data");
+	// 	// 		}
+	// 	// 	}),
+	// 	// 	catchError((error) =>
+	// 	// 	{
+	// 	// 		console.log("Error fetching location data:", error);
+	// 	// 		return of("N/A");
+	// 	// 	}),
+	// 	// );
+	// }
 
 	async openModalConfirm(data: FilteredLogsData, key: string) {
 		await this.retrievelogs2();
@@ -248,11 +249,11 @@ filterLogsByDateRange() {
 			.then(() => console.log("isread updated successfully in Firebase"))
 			.catch((error) => console.log("Error updating isread in Firebase:", error));
 	  
-		  this.getLocationString(place).subscribe(
-			(formattedAddress) => {
-			  this.selectedLog.sensorDataValues.loc = formattedAddress;
-			},
-		  );
+		//   this.getLocationString(place).subscribe(
+		// 	(formattedAddress) => {
+		// 	  this.selectedLog.sensorDataValues.loc = formattedAddress;
+		// 	},
+		//   );
 	  
 		  console.log(data.sensorDataValues.flame, "OPENMODAL");
 		  this.selectedUsers = data.userData;

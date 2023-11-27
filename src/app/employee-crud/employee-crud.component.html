@@ -16,6 +16,7 @@
     }
   </style>
 <h2>Employees</h2>
+
 <button type="button" class="btn btn-primary" (click)="openAddModal()">
   Add Employee
 </button>
@@ -32,7 +33,6 @@
   </tr>
   <tr *ngFor="let employee of employees">
     <td >{{ employee.employeeId }}</td>
-    <!-- <td>{{ employee.location }}</td> -->
     <td>{{ employee.email }}</td>
     <td>{{ employee.fullName }}</td>
     <td>{{ employee.gender }}</td>
@@ -60,10 +60,10 @@
           <table class="table-borderless" style="width: 100%;">
             <tbody>
               <tr>
-                <td style="font-size: 20px;" class="fw-bold">Location:</td>
+                <td style="font-size: 20px;" class="fw-bold">Coordinates:</td>
                 <td style="font-size: 20px;">
-                  <span *ngIf="!isEditMode">{{ selectedUser.location || 'N/A' }}</span>
-                  <input *ngIf="isEditMode" type="text" class="form-control" [(ngModel)]="selectedUser.location">
+                  <span *ngIf="!isEditMode">{{ selectedUser.coordinates || 'N/A' }}</span>
+                  <input *ngIf="isEditMode" type="text" class="form-control" [(ngModel)]="selectedUser.coordinates">
                 </td>
               </tr>
               <tr>
@@ -136,10 +136,6 @@
       <div class="modal-body">
         <!-- Employee Form -->
         <form (ngSubmit)="addEmployee()" #employeeForm="ngForm">
-          <div class="form-group">
-            <label for="location">Location</label>
-            <input type="text" class="form-control" id="location" [(ngModel)]="selectedUser.location" name="location" required>
-          </div>
           <div class="form-group">
             <label for="coordinates">Coordinates</label>
             <input type="text" class="form-control" id="coordinates" [(ngModel)]="selectedUser.coordinates" name="coordinates" required>

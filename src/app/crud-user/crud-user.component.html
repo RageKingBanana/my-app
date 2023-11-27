@@ -22,7 +22,6 @@
   <tr>
     <th hidden>Id</th>
     <th hidden>Recordings</th>
-    <th>Location</th>
     <th>Email</th>
     <th>Full Name</th>
     <th>Gender</th>
@@ -31,7 +30,6 @@
   <tr *ngFor="let user of registeredUsers">
     <td hidden>{{ user.userId }}</td>
     <td hidden>{{ user.Recordings }}</td>
-    <td>{{ user.location}}</td>
     <td>{{ user.email }}</td>
     <td>{{ user.fullName }}</td>
     <td>{{ user.gender }}</td>
@@ -59,8 +57,6 @@
   </tr>
   <tr *ngFor="let user of registeredUsers2">
     <td hidden>{{  user.userId }}</td>
-    <td hidden>{{ user.location }}</td>
-    <td>{{ user.location }}</td>
     <td>{{ user.email }}</td>
     <td>{{ user.fullName }}</td>
     <td>{{ user.gender }}</td>
@@ -87,10 +83,10 @@
           <table class="table-borderless" style="width: 100%;">
             <tbody>
               <tr>
-                <td style="font-size: 20px;" class="fw-bold">Location:</td>
+                <td style="font-size: 20px;" class="fw-bold">Coordinates:</td>
                 <td style="font-size: 20px;">
-                  <span *ngIf="!isEditMode">{{ selectedUser.location || 'N/A' }}</span>
-                  <input *ngIf="isEditMode" type="text" class="form-control" [(ngModel)]="selectedUser.location">
+                  <span *ngIf="!isEditMode">{{ selectedUser.coordinates || 'N/A' }}</span>
+                  <input *ngIf="isEditMode" type="text" class="form-control" [(ngModel)]="selectedUser.coordinates">
                 </td>
               </tr>
               <tr>
